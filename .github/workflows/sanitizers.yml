@@ -56,6 +56,10 @@ jobs:
       shell: bash
       working-directory: ${{ env.ROS_WS }}
       run: vcs import src < src/${PACKAGE_NAME}/.github/dependencies.repos
+    - name: check if dependencies have a matching branch
+      shell: bash
+      working-directory: ${{ env.ROS_WS }}/src
+      run: ./${PACKAGE_NAME}/.github/try_vcs_checkout ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} .
     - run: colcon graph
       shell: bash
       working-directory: ${{ env.ROS_WS }}
