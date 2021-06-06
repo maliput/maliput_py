@@ -1,4 +1,4 @@
-#include "pybind11/pybind11.h"
+#include <pybind11/pybind11.h>
 
 #include <maliput/math/quaternion.h>
 #include <maliput/math/roll_pitch_yaw.h>

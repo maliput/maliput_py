@@ -1,5 +1,5 @@
-#include "pybind11/pybind11.h"
-#include "pybind11/stl.h"
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include <maliput/common/logger.h>
 #include <maliput/plugin/maliput_plugin.h>
