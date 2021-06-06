@@ -1,13 +1,12 @@
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#include <map>
+#include <string>
 
 #include <maliput/common/logger.h>
 #include <maliput/plugin/maliput_plugin.h>
 #include <maliput/plugin/maliput_plugin_manager.h>
 #include <maliput/plugin/road_network_loader.h>
-
-#include <map>
-#include <string>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace maliput {
 namespace bindings {

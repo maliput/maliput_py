@@ -1,8 +1,7 @@
-#include <pybind11/pybind11.h>
-
 #include <maliput/math/quaternion.h>
 #include <maliput/math/roll_pitch_yaw.h>
 #include <maliput/math/vector.h>
+#include <pybind11/pybind11.h>
 
 namespace maliput {
 namespace bindings {
