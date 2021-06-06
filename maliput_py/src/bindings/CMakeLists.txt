@@ -8,7 +8,8 @@ pybind11_add_module(api_py api_py.cc)
 set_target_properties(api_py PROPERTIES OUTPUT_NAME "api")
 
 ament_target_dependencies(api_py
-  "maliput"
+  PUBLIC
+    "maliput"
 )
 
 target_include_directories(api_py
@@ -33,7 +34,8 @@ target_include_directories(math_py
 )
 
 ament_target_dependencies(math_py
-  "maliput"
+  PUBLIC
+    "maliput"
 )
 
 target_link_libraries(math_py
@@ -53,7 +55,8 @@ target_include_directories(plugin_py
 )
 
 ament_target_dependencies(plugin_py
-  "maliput"
+  PUBLIC
+    "maliput"
 )
 
 target_link_libraries(plugin_py
