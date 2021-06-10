@@ -60,10 +60,12 @@ PYBIND11_MODULE(api, m) {
       .def("junction", &api::RoadGeometry::junction, py::return_value_policy::reference_internal)
       .def("ById", &api::RoadGeometry::ById, py::return_value_policy::reference_internal);
 
+  // clang-format off
   py::class_<api::RoadGeometry::IdIndex>(m, "RoadGeometry.IdIndex")
       .def("GetLane",
            [](const api::RoadGeometry::IdIndex* self, const std::string& id) { return self->GetLane(api::LaneId(id)); },
            py::arg("id"), py::return_value_policy::reference_internal);
+  // clang-format on
 
   py::class_<api::Junction>(m, "Junction")
       .def("num_segments", &api::Junction::num_segments)
