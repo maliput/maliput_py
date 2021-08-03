@@ -35,9 +35,11 @@ std::unique_ptr<const maliput::api::RoadNetwork> CreateRoadNetworkFromPlugin(
     maliput::log()->error("{} plugin should be a RoadNetworkLoader plugin type", plugin_id);
     MALIPUT_THROW_MESSAGE(plugin_id + " plugin should be a RoadNetworkLoader plugin type.");
   }
-  std::unique_ptr<maliput::plugin::RoadNetworkLoader> road_network_loader =
-      maliput_plugin->ExecuteSymbol<std::unique_ptr<maliput::plugin::RoadNetworkLoader>>(
+  maliput::plugin::RoadNetworkLoaderPtr rn_loader_ptr =
+      maliput_plugin->ExecuteSymbol<maliput::plugin::RoadNetworkLoaderPtr>(
           maliput::plugin::RoadNetworkLoader::GetEntryPoint());
+  std::unique_ptr<maliput::plugin::RoadNetworkLoader> road_network_loader{
+      reinterpret_cast<maliput::plugin::RoadNetworkLoader*>(rn_loader_ptr)};
   return (*road_network_loader)(properties);
 }
 
