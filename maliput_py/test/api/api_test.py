@@ -3,7 +3,7 @@
 # Copyright 2021 Toyota Research Institute
 #
 
-"""Unit tests for the api python binding"""
+"""Unit tests for the maliput::api python binding"""
 
 import unittest
 

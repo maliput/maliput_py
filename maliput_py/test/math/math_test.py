@@ -3,7 +3,7 @@
 # Copyright 2020 Toyota Research Institute
 #
 
-"""Unit tests for the maliput::api python binding"""
+"""Unit tests for the maliput::math python binding"""
 
 import math as m
 import unittest
