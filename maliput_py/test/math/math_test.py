@@ -3,7 +3,7 @@
 # Copyright 2020 Toyota Research Institute
 #
 
-"""Unit tests for the math python binding"""
+"""Unit tests for the maliput::math python binding"""
 
 import math as m
 import unittest
@@ -16,7 +16,7 @@ from maliput.math import (
 )
 
 
-class TestMaliput(unittest.TestCase):
+class TestMaliputMath(unittest.TestCase):
     """
     Unit tests for the math python binding
     """
@@ -25,7 +25,7 @@ class TestMaliput(unittest.TestCase):
         Evaluates the constructor and accessors.
         """
         kDut = Vector3(25., 158., 33.)
-        self.assertTrue(kDut.size() == 3.)
+        self.assertTrue(kDut.size() == 3)
         self.assertTrue(kDut.x() == 25.)
         self.assertTrue(kDut.y() == 158.)
         self.assertTrue(kDut.z() == 33.)
@@ -40,7 +40,7 @@ class TestMaliput(unittest.TestCase):
         Evaluates the constructor and accessors.
         """
         kDut = Vector4(25., 158., 33., 0.02)
-        self.assertTrue(kDut.size() == 4.)
+        self.assertTrue(kDut.size() == 4)
         self.assertTrue(kDut.x() == 25.)
         self.assertTrue(kDut.y() == 158.)
         self.assertTrue(kDut.z() == 33.)

@@ -48,6 +48,7 @@ PYBIND11_MODULE(api, m) {
                     py::keep_alive<1, 2>());
 
   py::class_<api::Rotation>(m, "Rotation")
+      .def(py::init<>())
       .def("quat", &api::Rotation::quat, py::return_value_policy::reference_internal)
       .def("rpy", &api::Rotation::rpy);
 
