@@ -20,7 +20,7 @@ namespace {
 // @throws maliput::common::assertion_error When `plugin_id` is not found.
 // @throws maliput::common::assertion_error When the plugin isn't a RoadNetworkLoader plugin type.
 // @throws maliput::common::assertion_error When the RoadNetwork can't be loaded.
-std::unique_ptr<const maliput::api::RoadNetwork> CreateRoadNetworkFromPlugin(
+std::unique_ptr<maliput::api::RoadNetwork> CreateRoadNetworkFromPlugin(
     const std::string& plugin_id, const std::map<std::string, std::string>& properties) {
   // 'manager' is static for two main reasons:
   // 1 - The manager should keep loaded the correspondant plugin until the program is finished.
@@ -55,7 +55,10 @@ PYBIND11_MODULE(plugin, m) {
 
   py::class_<plugin::MaliputPluginManager>(m, "MaliputPluginManager")
       .def(py::init<>())
-      .def("GetPlugin", &plugin::MaliputPluginManager::GetPlugin, py::return_value_policy::reference_internal)
+      .def("GetPlugin",
+           [](plugin::MaliputPluginManager& self, const std::string& plugin_name) {
+             return self.GetPlugin(plugin::MaliputPlugin::Id(plugin_name));
+           })
       .def("AddPlugin", &plugin::MaliputPluginManager::AddPlugin);
 
   m.def("create_road_network_from_plugin", &CreateRoadNetworkFromPlugin,
