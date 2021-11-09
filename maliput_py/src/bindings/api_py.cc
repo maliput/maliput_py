@@ -5,6 +5,7 @@
 #include <maliput/api/road_network.h>
 #include <maliput/api/segment.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace maliput {
 namespace bindings {
@@ -22,7 +23,16 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::InertialPosition>(m, "InertialPosition")
       .def(py::init<double, double, double>(), py::arg("x"), py::arg("y"), py::arg("z"))
-      .def("xyz", &api::InertialPosition::xyz, py::return_value_policy::reference_internal);
+      .def("__eq__", [](const api::InertialPosition& lhs, const api::InertialPosition& rhs) { return lhs == rhs; })
+      .def("xyz", &api::InertialPosition::xyz, py::return_value_policy::reference_internal)
+      .def("length", &api::InertialPosition::length)
+      .def("Distance", &api::InertialPosition::Distance, py::arg("inertial_position"))
+      .def("x", &api::InertialPosition::x)
+      .def("set_x", &api::InertialPosition::set_x)
+      .def("y", &api::InertialPosition::y)
+      .def("set_y", &api::InertialPosition::set_y)
+      .def("z", &api::InertialPosition::z)
+      .def("set_z", &api::InertialPosition::set_z);
 
   py::class_<api::LanePosition>(m, "LanePosition")
       .def(py::init<double, double, double>(), py::arg("s"), py::arg("r"), py::arg("h"))
@@ -36,16 +46,19 @@ PYBIND11_MODULE(api, m) {
       .def_readwrite("nearest_position", &api::LanePositionResult::nearest_position)
       .def_readwrite("distance", &api::LanePositionResult::distance);
 
-  py::class_<api::RoadPosition> road_position(m, "RoadPosition");
-  road_position  // BR
+  py::class_<api::RoadPosition>(m, "RoadPosition")
       .def(py::init<>())
       .def(py::init<const api::Lane*, const api::LanePosition&>(), py::arg("lane"), py::arg("pos"),
            // Keep alive, reference: `self` keeps `Lane*` alive.
            py::keep_alive<1, 2>())
       .def_readwrite("pos", &api::RoadPosition::pos)
-      .def_property("lane", py::cpp_function([](const api::RoadPosition* self) { return self->lane; }),
-                    py::cpp_function([](api::RoadPosition* self, api::Lane* value) { self->lane = value; }),
-                    py::keep_alive<1, 2>());
+      .def_readonly("lane", &api::RoadPosition::lane);
+
+  py::class_<api::RoadPositionResult>(m, "RoadPositionResult")
+      .def(py::init<>())
+      .def_readwrite("road_position", &api::RoadPositionResult::road_position)
+      .def_readwrite("nearest_position", &api::RoadPositionResult::nearest_position)
+      .def_readwrite("distance", &api::RoadPositionResult::distance);
 
   py::class_<api::Rotation>(m, "Rotation")
       .def(py::init<>())
@@ -59,24 +72,46 @@ PYBIND11_MODULE(api, m) {
       .def("id", &api::RoadGeometry::id)
       .def("num_junctions", &api::RoadGeometry::num_junctions)
       .def("junction", &api::RoadGeometry::junction, py::return_value_policy::reference_internal)
-      .def("ById", &api::RoadGeometry::ById, py::return_value_policy::reference_internal);
+      .def("ById", &api::RoadGeometry::ById, py::return_value_policy::reference_internal)
+      .def("ToRoadPosition",
+           [](const api::RoadGeometry& self, const api::InertialPosition& inertial_position) {
+             return self.ToRoadPosition(inertial_position);
+           },
+           py::arg("inertial_position"))
+      .def("ToRoadPositionByHint",
+           [](const api::RoadGeometry& self, const api::InertialPosition& inertial_position,
+              const api::RoadPosition& road_position) { return self.ToRoadPosition(inertial_position, road_position); },
+           py::arg("inertial_position"), py::arg("hint"))
+      .def("FindRoadPositions", &api::RoadGeometry::FindRoadPositions, py::arg("inertial_position"), py::arg("radius"));
 
-  // clang-format off
   py::class_<api::RoadGeometry::IdIndex>(m, "RoadGeometry.IdIndex")
-      .def("GetLane",
-           [](const api::RoadGeometry::IdIndex* self, const std::string& id) { return self->GetLane(api::LaneId(id)); },
-           py::arg("id"), py::return_value_policy::reference_internal);
-  // clang-format on
+      .def("GetLane", &api::RoadGeometry::IdIndex::GetLane, py::arg("id"), py::return_value_policy::reference_internal)
+      .def("GetLanes", &api::RoadGeometry::IdIndex::GetLanes, py::return_value_policy::reference_internal)
+      .def("GetSegment", &api::RoadGeometry::IdIndex::GetSegment, py::arg("id"),
+           py::return_value_policy::reference_internal)
+      .def("GetJunction", &api::RoadGeometry::IdIndex::GetJunction, py::arg("id"),
+           py::return_value_policy::reference_internal);
+
+  py::class_<api::JunctionId>(m, "JunctionId")
+      .def(py::init<std::string>())
+      .def("string", &api::JunctionId::string, py::return_value_policy::reference_internal);
 
   py::class_<api::Junction>(m, "Junction")
       .def("num_segments", &api::Junction::num_segments)
-      .def("segment", &api::Junction::segment, py::return_value_policy::reference_internal);
+      .def("segment", &api::Junction::segment, py::return_value_policy::reference_internal)
+      .def("id", &api::Junction::id, py::return_value_policy::reference_internal)
+      .def("road_geometry", &api::Junction::road_geometry, py::return_value_policy::reference_internal);
+
+  py::class_<api::SegmentId>(m, "SegmentId")
+      .def(py::init<std::string>())
+      .def("string", &api::SegmentId::string, py::return_value_policy::reference_internal);
 
   py::class_<api::Segment>(m, "Segment")
       .def("num_lanes", &api::Segment::num_lanes)
-      .def("lane", &api::Segment::lane, py::return_value_policy::reference_internal);
+      .def("lane", &api::Segment::lane, py::return_value_policy::reference_internal)
+      .def("junction", &api::Segment::num_lanes, py::return_value_policy::reference_internal)
+      .def("id", &api::Segment::id, py::return_value_policy::reference_internal);
 
-  // TODO(m-chaturvedi) Add Pybind11 documentation.
   py::class_<api::LaneId>(m, "LaneId")
       .def(py::init<std::string>())
       .def("string", &api::LaneId::string, py::return_value_policy::reference_internal);
@@ -86,7 +121,10 @@ PYBIND11_MODULE(api, m) {
       .def("ToInertialPosition", &api::Lane::ToInertialPosition)
       .def("GetOrientation", &api::Lane::GetOrientation)
       .def("length", &api::Lane::length)
-      .def("id", &api::Lane::id);
+      .def("id", &api::Lane::id)
+      .def("segment", &api::Lane::segment, py::return_value_policy::reference_internal)
+      .def("to_left", &api::Lane::to_left, py::return_value_policy::reference_internal)
+      .def("to_right", &api::Lane::to_right, py::return_value_policy::reference_internal);
 }
 
 }  // namespace bindings

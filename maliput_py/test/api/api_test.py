@@ -5,16 +5,20 @@
 
 """Unit tests for the maliput::api python binding"""
 
+import math
 import unittest
 
 from maliput.api import (
     InertialPosition,
+    JunctionId,
     LaneId,
     LanePosition,
     LanePositionResult,
     RoadGeometryId,
     RoadPosition,
+    RoadPositionResult,
     Rotation,
+    SegmentId,
 )
 
 from maliput.math import (
@@ -39,8 +43,16 @@ class TestMaliputApi(unittest.TestCase):
         """
         Tests the InertialPosition binding.
         """
-        dut = InertialPosition(x=1., y=2., z=3.)
-        self.assertEqual(Vector3(1., 2., 3.), dut.xyz())
+        dut = InertialPosition(x=5., y=10., z=15.)
+        self.assertEqual(Vector3(5., 10., 15.), dut.xyz())
+        dut.set_x(dut.x() * 2)
+        dut.set_y(dut.y() * 2)
+        dut.set_z(dut.z() * 2)
+        self.assertEqual(5*2, dut.x())
+        self.assertEqual(10*2, dut.y())
+        self.assertEqual(15*2, dut.z())
+        self.assertEqual(math.sqrt(dut.x()**2 + dut.y()**2 + dut.z()**2), dut.length())
+        self.assertEqual(100, dut.Distance(InertialPosition(dut.x() + 100, dut.y(), dut.z())))
 
     def test_lane_position(self):
         """
@@ -77,6 +89,16 @@ class TestMaliputApi(unittest.TestCase):
         self.assertEqual(None, dut.lane)
         self.assertEqual(Vector3(0., 0., 0.), dut.pos.srh())
 
+    def test_empty_road_position_result(self):
+        """
+        Tests an empty RoadPositionResult binding.
+        """
+        dut = RoadPositionResult()
+        self.assertEqual(None, dut.road_position.lane)
+        self.assertEqual(Vector3(0., 0., 0.), dut.road_position.pos.srh())
+        self.assertEqual(InertialPosition(0., 0., 0.), dut.nearest_position)
+        self.assertEqual(0, dut.distance)
+
     def test_identity_rotation(self):
         """
         Tests an empty Rotation binding.
@@ -92,4 +114,18 @@ class TestMaliputApi(unittest.TestCase):
         Tests the LaneId binding.
         """
         dut = LaneId("dut")
+        self.assertEqual("dut", dut.string())
+
+    def test_segment_id(self):
+        """
+        Tests the SegmentId binding.
+        """
+        dut = SegmentId("dut")
+        self.assertEqual("dut", dut.string())
+
+    def test_junction_id(self):
+        """
+        Tests the JunctionId binding.
+        """
+        dut = JunctionId("dut")
         self.assertEqual("dut", dut.string())

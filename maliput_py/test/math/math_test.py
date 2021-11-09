@@ -34,6 +34,7 @@ class TestMaliputMath(unittest.TestCase):
         self.assertTrue(kDut[2] == 33.)
         self.assertTrue(kDut == Vector3(25., 158., 33.))
         self.assertTrue(kDut != Vector3(33., 158., 25.))
+        self.assertEqual(kDut.__str__(), "{25, 158, 33}")
 
     def test_vector4(self):
         """
@@ -51,6 +52,7 @@ class TestMaliputMath(unittest.TestCase):
         self.assertTrue(kDut[3] == 0.02)
         self.assertTrue(kDut == Vector4(25., 158., 33., 0.02))
         self.assertTrue(kDut != Vector4(0.02, 33., 158., 25.))
+        self.assertEqual(kDut.__str__(), "{25, 158, 33, 0.02}")
 
     def test_rollpitchyaw(self):
         """
@@ -66,6 +68,7 @@ class TestMaliputMath(unittest.TestCase):
         self.assertAlmostEqual(quat.x(), kExpectedQuat.x())
         self.assertAlmostEqual(quat.y(), kExpectedQuat.y())
         self.assertAlmostEqual(quat.z(), kExpectedQuat.z())
+        self.assertEqual(RollPitchYaw(1.5, 0.5, -1.5).__str__(), "{1.5, 0.5, -1.5}")
 
     def test_quaternion(self):
         """
@@ -77,3 +80,4 @@ class TestMaliputMath(unittest.TestCase):
         self.assertTrue(kDut.y() == 0.177)
         self.assertTrue(kDut.z() == 0.306)
         self.assertTrue(kDut.coeffs() == Vector4(0.884, 0.306, 0.177, 0.306))
+        self.assertEqual(kDut.__str__(), "(w: 0.884, x: 0.306, y: 0.177, z: 0.306)")
