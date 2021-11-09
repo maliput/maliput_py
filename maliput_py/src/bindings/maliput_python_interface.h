@@ -62,6 +62,9 @@
 /// import maliput.plugin
 ///
 /// manager = maliput.plugin.MaliputPluginManager()
+/// # Plugins` id can be listed by doing:
+/// plugin_ids = maliput.plugin.MaliputPluginManager().ListPlugins()
+/// # A loaded plugin can be obtained by doing:
 /// my_plugin = maliput.plugin.MaliputPluginManager().GetPlugin("foo_plugin")
 /// @endcode
 ///
