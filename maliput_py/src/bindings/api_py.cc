@@ -73,15 +73,16 @@ PYBIND11_MODULE(api, m) {
       .def("num_junctions", &api::RoadGeometry::num_junctions)
       .def("junction", &api::RoadGeometry::junction, py::return_value_policy::reference_internal)
       .def("ById", &api::RoadGeometry::ById, py::return_value_policy::reference_internal)
+      // clang-format off
       .def("ToRoadPosition",
            [](const api::RoadGeometry& self, const api::InertialPosition& inertial_position) {
              return self.ToRoadPosition(inertial_position);
-           },
-           py::arg("inertial_position"))
+           }, py::arg("inertial_position"))
       .def("ToRoadPositionByHint",
            [](const api::RoadGeometry& self, const api::InertialPosition& inertial_position,
               const api::RoadPosition& road_position) { return self.ToRoadPosition(inertial_position, road_position); },
            py::arg("inertial_position"), py::arg("hint"))
+      // clang-format on
       .def("FindRoadPositions", &api::RoadGeometry::FindRoadPositions, py::arg("inertial_position"), py::arg("radius"));
 
   py::class_<api::RoadGeometry::IdIndex>(m, "RoadGeometry.IdIndex")
