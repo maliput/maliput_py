@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <maliput/math/quaternion.h>
 #include <maliput/math/roll_pitch_yaw.h>
 #include <maliput/math/vector.h>
@@ -14,6 +16,12 @@ PYBIND11_MODULE(math, m) {
       .def("__getitem__", py::overload_cast<std::size_t>(&math::Vector3::operator[]), py::is_operator())
       .def("__eq__", [](const math::Vector3& a, const math::Vector3& b) { return a == b; })
       .def("__ne__", [](const math::Vector3& a, const math::Vector3& b) { return a != b; })
+      .def("__str__",
+           [](const math::Vector3& self) {
+             std::stringstream ss;
+             ss << self;
+             return ss.str();
+           })
       .def("size", &math::Vector3::size)
       .def("x", py::overload_cast<>(&math::Vector3::x))
       .def("y", py::overload_cast<>(&math::Vector3::y))
@@ -24,6 +32,12 @@ PYBIND11_MODULE(math, m) {
       .def("__getitem__", py::overload_cast<std::size_t>(&math::Vector4::operator[]), py::is_operator())
       .def("__eq__", [](const math::Vector4& a, const math::Vector4& b) { return a == b; })
       .def("__ne__", [](const math::Vector4& a, const math::Vector4& b) { return a != b; })
+      .def("__str__",
+           [](const math::Vector4& self) {
+             std::stringstream ss;
+             ss << self;
+             return ss.str();
+           })
       .def("size", &math::Vector4::size)
       .def("x", py::overload_cast<>(&math::Vector4::x))
       .def("y", py::overload_cast<>(&math::Vector4::y))
@@ -32,6 +46,12 @@ PYBIND11_MODULE(math, m) {
 
   py::class_<math::RollPitchYaw>(m, "RollPitchYaw")
       .def(py::init<double, double, double>())
+      .def("__str__",
+           [](const math::RollPitchYaw& self) {
+             std::stringstream ss;
+             ss << self.vector();
+             return ss.str();
+           })
       .def("ToQuaternion", &math::RollPitchYaw::ToQuaternion)
       .def("roll_angle", py::overload_cast<>(&math::RollPitchYaw::roll_angle))
       .def("pitch_angle", py::overload_cast<>(&math::RollPitchYaw::pitch_angle))
@@ -39,6 +59,12 @@ PYBIND11_MODULE(math, m) {
 
   py::class_<math::Quaternion>(m, "Quaternion")
       .def(py::init<double, double, double, double>())
+      .def("__str__",
+           [](const math::Quaternion& self) {
+             std::stringstream ss;
+             ss << self;
+             return ss.str();
+           })
       .def("coeffs", &math::Quaternion::coeffs)
       .def("w", py::overload_cast<>(&math::Quaternion::w))
       .def("x", py::overload_cast<>(&math::Quaternion::x))
