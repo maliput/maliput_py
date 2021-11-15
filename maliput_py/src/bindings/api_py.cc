@@ -101,7 +101,8 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::JunctionId>(m, "JunctionId")
       .def(py::init<std::string>())
-      .def("string", &api::JunctionId::string, py::return_value_policy::reference_internal);
+      .def("string", &api::JunctionId::string, py::return_value_policy::reference_internal)
+      .def("__repr__", [](const api::JunctionId& id) { return id.string(); });
 
   py::class_<api::Junction>(m, "Junction")
       .def("num_segments", &api::Junction::num_segments)
@@ -111,7 +112,8 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::SegmentId>(m, "SegmentId")
       .def(py::init<std::string>())
-      .def("string", &api::SegmentId::string, py::return_value_policy::reference_internal);
+      .def("string", &api::SegmentId::string, py::return_value_policy::reference_internal)
+      .def("__repr__", [](const api::SegmentId& id) { return id.string(); });
 
   py::class_<api::Segment>(m, "Segment")
       .def("num_lanes", &api::Segment::num_lanes)
@@ -121,7 +123,8 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::LaneId>(m, "LaneId")
       .def(py::init<std::string>())
-      .def("string", &api::LaneId::string, py::return_value_policy::reference_internal);
+      .def("string", &api::LaneId::string, py::return_value_policy::reference_internal)
+      .def("__repr__", [](const api::LaneId& id) { return id.string(); });
 
   py::class_<api::Lane>(m, "Lane")
       .def("ToLanePosition", &api::Lane::ToLanePosition)

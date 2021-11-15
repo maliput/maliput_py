@@ -121,6 +121,7 @@ class TestMaliputApi(unittest.TestCase):
         """
         dut = LaneId("dut")
         self.assertEqual("dut", dut.string())
+        self.assertEqual("dut", dut.__repr__())
 
     def test_segment_id(self):
         """
@@ -128,6 +129,7 @@ class TestMaliputApi(unittest.TestCase):
         """
         dut = SegmentId("dut")
         self.assertEqual("dut", dut.string())
+        self.assertEqual("dut", dut.__repr__())
 
     def test_junction_id(self):
         """
@@ -135,3 +137,4 @@ class TestMaliputApi(unittest.TestCase):
         """
         dut = JunctionId("dut")
         self.assertEqual("dut", dut.string())
+        self.assertEqual("dut", dut.__repr__())
