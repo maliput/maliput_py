@@ -60,6 +60,12 @@ class TestMaliputApi(unittest.TestCase):
         """
         dut = LanePosition(s=1., r=2., h=3.)
         self.assertEqual(Vector3(1., 2., 3.), dut.srh())
+        dut.set_s(11)
+        self.assertEqual(11, dut.s())
+        dut.set_r(12)
+        self.assertEqual(12, dut.r())
+        dut.set_h(13)
+        self.assertEqual(13, dut.h())
 
     def test_lane_position_result(self):
         """

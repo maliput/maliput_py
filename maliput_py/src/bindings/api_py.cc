@@ -36,7 +36,13 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::LanePosition>(m, "LanePosition")
       .def(py::init<double, double, double>(), py::arg("s"), py::arg("r"), py::arg("h"))
-      .def("srh", &api::LanePosition::srh, py::return_value_policy::reference_internal);
+      .def("srh", &api::LanePosition::srh, py::return_value_policy::reference_internal)
+      .def("s", &api::LanePosition::s)
+      .def("set_s", &api::LanePosition::set_s)
+      .def("r", &api::LanePosition::r)
+      .def("set_r", &api::LanePosition::set_r)
+      .def("h", &api::LanePosition::h)
+      .def("set_h", &api::LanePosition::set_h);
 
   py::class_<api::LanePositionResult>(m, "LanePositionResult")
       .def(py::init<>())
