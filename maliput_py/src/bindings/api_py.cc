@@ -36,7 +36,13 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::LanePosition>(m, "LanePosition")
       .def(py::init<double, double, double>(), py::arg("s"), py::arg("r"), py::arg("h"))
-      .def("srh", &api::LanePosition::srh, py::return_value_policy::reference_internal);
+      .def("srh", &api::LanePosition::srh, py::return_value_policy::reference_internal)
+      .def("s", &api::LanePosition::s)
+      .def("set_s", &api::LanePosition::set_s)
+      .def("r", &api::LanePosition::r)
+      .def("set_r", &api::LanePosition::set_r)
+      .def("h", &api::LanePosition::h)
+      .def("set_h", &api::LanePosition::set_h);
 
   py::class_<api::LanePositionResult>(m, "LanePositionResult")
       .def(py::init<>())
@@ -95,7 +101,8 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::JunctionId>(m, "JunctionId")
       .def(py::init<std::string>())
-      .def("string", &api::JunctionId::string, py::return_value_policy::reference_internal);
+      .def("string", &api::JunctionId::string, py::return_value_policy::reference_internal)
+      .def("__repr__", [](const api::JunctionId& id) { return id.string(); });
 
   py::class_<api::Junction>(m, "Junction")
       .def("num_segments", &api::Junction::num_segments)
@@ -105,7 +112,8 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::SegmentId>(m, "SegmentId")
       .def(py::init<std::string>())
-      .def("string", &api::SegmentId::string, py::return_value_policy::reference_internal);
+      .def("string", &api::SegmentId::string, py::return_value_policy::reference_internal)
+      .def("__repr__", [](const api::SegmentId& id) { return id.string(); });
 
   py::class_<api::Segment>(m, "Segment")
       .def("num_lanes", &api::Segment::num_lanes)
@@ -115,7 +123,8 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::LaneId>(m, "LaneId")
       .def(py::init<std::string>())
-      .def("string", &api::LaneId::string, py::return_value_policy::reference_internal);
+      .def("string", &api::LaneId::string, py::return_value_policy::reference_internal)
+      .def("__repr__", [](const api::LaneId& id) { return id.string(); });
 
   py::class_<api::Lane>(m, "Lane")
       .def("ToLanePosition", &api::Lane::ToLanePosition)
