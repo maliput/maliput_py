@@ -1,6 +1,7 @@
 #include <maliput/api/junction.h>
 #include <maliput/api/lane.h>
 #include <maliput/api/lane_data.h>
+#include <maliput/api/regions.h>
 #include <maliput/api/road_geometry.h>
 #include <maliput/api/road_network.h>
 #include <maliput/api/segment.h>
@@ -23,7 +24,7 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::InertialPosition>(m, "InertialPosition")
       .def(py::init<double, double, double>(), py::arg("x"), py::arg("y"), py::arg("z"))
-      .def("__eq__", [](const api::InertialPosition& lhs, const api::InertialPosition& rhs) { return lhs == rhs; })
+      .def("__eq__", &api::InertialPosition::operator==)
       .def("xyz", &api::InertialPosition::xyz, py::return_value_policy::reference_internal)
       .def("length", &api::InertialPosition::length)
       .def("Distance", &api::InertialPosition::Distance, py::arg("inertial_position"))
@@ -101,6 +102,7 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::JunctionId>(m, "JunctionId")
       .def(py::init<std::string>())
+      .def("__eq__", &api::JunctionId::operator==)
       .def("string", &api::JunctionId::string, py::return_value_policy::reference_internal)
       .def("__repr__", [](const api::JunctionId& id) { return id.string(); });
 
@@ -112,6 +114,7 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::SegmentId>(m, "SegmentId")
       .def(py::init<std::string>())
+      .def("__eq__", &api::SegmentId::operator==)
       .def("string", &api::SegmentId::string, py::return_value_policy::reference_internal)
       .def("__repr__", [](const api::SegmentId& id) { return id.string(); });
 
@@ -123,6 +126,7 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::LaneId>(m, "LaneId")
       .def(py::init<std::string>())
+      .def("__eq__", &api::LaneId::operator==)
       .def("string", &api::LaneId::string, py::return_value_policy::reference_internal)
       .def("__repr__", [](const api::LaneId& id) { return id.string(); });
 
@@ -135,6 +139,31 @@ PYBIND11_MODULE(api, m) {
       .def("segment", &api::Lane::segment, py::return_value_policy::reference_internal)
       .def("to_left", &api::Lane::to_left, py::return_value_policy::reference_internal)
       .def("to_right", &api::Lane::to_right, py::return_value_policy::reference_internal);
+
+  py::class_<api::SRange>(m, "SRange")
+      .def(py::init<double, double>(), py::arg("s0"), py::arg("s1"))
+      .def("s0", &api::SRange::s0)
+      .def("s1", &api::SRange::s1)
+      .def("set_s0", &api::SRange::set_s0, py::arg("s0"))
+      .def("set_s1", &api::SRange::set_s1, py::arg("s1"))
+      .def("size", &api::SRange::size)
+      .def("WithS", &api::SRange::WithS)
+      .def("Intersects", &api::SRange::Intersects, py::arg("s_range"), py::arg("tolerance"))
+      .def("GetIntersection", &api::SRange::GetIntersection, py::arg("s_range"), py::arg("tolerance"));
+
+  py::class_<api::LaneSRange>(m, "LaneSRange")
+      .def(py::init<const maliput::api::LaneId&, const maliput::api::SRange&>(), py::arg("lane_id"), py::arg("s_range"))
+      .def("lane_id", &api::LaneSRange::lane_id, py::return_value_policy::reference_internal)
+      .def("s_range", &api::LaneSRange::s_range)
+      .def("length", &api::LaneSRange::length)
+      .def("Intersects", &api::LaneSRange::Intersects, py::arg("lane_s_range"), py::arg("tolerance"));
+
+  py::class_<api::LaneSRoute>(m, "LaneSRoute")
+      .def(py::init<>())
+      .def(py::init<const std::vector<maliput::api::LaneSRange>&>(), py::arg("ranges"))
+      .def("ranges", &api::LaneSRoute::ranges, py::return_value_policy::reference_internal)
+      .def("length", &api::LaneSRoute::length)
+      .def("Intersects", &api::LaneSRoute::Intersects, py::arg("lane_s_route"), py::arg("tolerance"));
 }
 
 }  // namespace bindings
