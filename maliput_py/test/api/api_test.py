@@ -14,17 +14,22 @@ from maliput.api import (
     LaneId,
     LanePosition,
     LanePositionResult,
+    LaneSRange,
+    LaneSRoute,
     RoadGeometryId,
     RoadPosition,
     RoadPositionResult,
     Rotation,
     SegmentId,
+    SRange,
 )
 
 from maliput.math import (
     Vector3,
     Vector4,
 )
+
+TOLERANCE = 1e-9
 
 
 class TestMaliputApi(unittest.TestCase):
@@ -44,6 +49,7 @@ class TestMaliputApi(unittest.TestCase):
         Tests the InertialPosition binding.
         """
         dut = InertialPosition(x=5., y=10., z=15.)
+        self.assertEqual(dut, dut)
         self.assertEqual(Vector3(5., 10., 15.), dut.xyz())
         dut.set_x(dut.x() * 2)
         dut.set_y(dut.y() * 2)
@@ -122,6 +128,7 @@ class TestMaliputApi(unittest.TestCase):
         dut = LaneId("dut")
         self.assertEqual("dut", dut.string())
         self.assertEqual("dut", dut.__repr__())
+        self.assertEqual(LaneId("dut"), dut)
 
     def test_segment_id(self):
         """
@@ -130,6 +137,7 @@ class TestMaliputApi(unittest.TestCase):
         dut = SegmentId("dut")
         self.assertEqual("dut", dut.string())
         self.assertEqual("dut", dut.__repr__())
+        self.assertEqual(SegmentId("dut"), dut)
 
     def test_junction_id(self):
         """
@@ -138,3 +146,76 @@ class TestMaliputApi(unittest.TestCase):
         dut = JunctionId("dut")
         self.assertEqual("dut", dut.string())
         self.assertEqual("dut", dut.__repr__())
+        self.assertEqual(JunctionId("dut"), dut)
+
+    def test_s_range(self):
+        """
+        Tests the SRange binding.
+        """
+        dut = SRange(5., 15.)
+        self.assertEqual(5., dut.s0())
+        self.assertEqual(15., dut.s1())
+        self.assertEqual(10, dut.size())
+        self.assertEqual(1, dut.WithS())
+        # Change SRange
+        dut.set_s0(100.)
+        dut.set_s1(20.)
+        self.assertEqual(100., dut.s0())
+        self.assertEqual(20., dut.s1())
+        self.assertEqual(0, dut.WithS())
+        # Compare with overlapped SRange
+        overlapped_s_range = SRange(50., 150.)
+        self.assertEqual(True, dut.Intersects(overlapped_s_range, TOLERANCE))
+        intersected = dut.GetIntersection(overlapped_s_range, TOLERANCE)
+        self.assertFalse(intersected is None)
+        self.assertEqual(50., intersected.s0())
+        self.assertEqual(100., intersected.s1())
+        # Intersects with non-overlapped SRange
+        not_overlapped_s_range = SRange(0., 10.)
+        intersected = dut.GetIntersection(not_overlapped_s_range, TOLERANCE)
+        self.assertTrue(intersected is None)
+
+    def test_lane_s_range(self):
+        """
+        Tests the LaneSRange binding.
+        """
+        s_range = SRange(5., 15.)
+        lane_id = LaneId("dut_lane")
+        dut = LaneSRange(lane_id, s_range)
+        print(lane_id)
+        print(dut.lane_id())
+        self.assertEqual(lane_id, dut.lane_id())
+        self.assertEqual(s_range.s0(), dut.s_range().s0())
+        self.assertEqual(s_range.s1(), dut.s_range().s1())
+        self.assertEqual(s_range.size(), dut.length())
+        # Check intersections
+        other_lane_s_range = LaneSRange(LaneId("other_lane"), SRange(10., 15.))
+        self.assertFalse(dut.Intersects(other_lane_s_range, TOLERANCE))
+        overlapped_lane_s_range = LaneSRange(LaneId("dut_lane"), SRange(10., 15.))
+        self.assertTrue(dut.Intersects(overlapped_lane_s_range, TOLERANCE))
+        not_overlapped_lane_s_range = LaneSRange(LaneId("dut_lane"), SRange(50., 75.))
+        self.assertFalse(dut.Intersects(not_overlapped_lane_s_range, TOLERANCE))
+
+    def test_lane_s_route(self):
+        """
+        Tests the LaneSRoute binding.
+        """
+        dut = LaneSRoute()
+        self.assertEqual(0., dut.length())
+        self.assertEqual(0., len(dut.ranges()))
+        dut = LaneSRoute([
+            LaneSRange(LaneId("lane_1"), SRange(20., 100.)),
+            LaneSRange(LaneId("lane_2"), SRange(0., 100.)),
+            LaneSRange(LaneId("lane_3"), SRange(0., 20.)),
+        ])
+        self.assertEqual(200., dut.length())
+        self.assertEqual(3., len(dut.ranges()))
+        # Check intersects
+        overlapped_dut = LaneSRoute([
+            LaneSRange(LaneId("lane_2"), SRange(50., 75.)),
+        ])
+        self.assertTrue(dut.Intersects(overlapped_dut, TOLERANCE))
+        not_overlapped_dut = LaneSRoute([
+            LaneSRange(LaneId("other_lane"), SRange(50., 75.)),
+        ])
+        self.assertFalse(dut.Intersects(not_overlapped_dut, TOLERANCE))
