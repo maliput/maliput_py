@@ -11,6 +11,7 @@ import unittest
 from maliput.api import (
     InertialPosition,
     JunctionId,
+    LaneEnd,
     LaneId,
     LanePosition,
     LanePositionResult,
@@ -22,6 +23,7 @@ from maliput.api import (
     Rotation,
     SegmentId,
     SRange,
+    Which,
 )
 
 from maliput.math import (
@@ -219,3 +221,17 @@ class TestMaliputApi(unittest.TestCase):
             LaneSRange(LaneId("other_lane"), SRange(50., 75.)),
         ])
         self.assertFalse(dut.Intersects(not_overlapped_dut, TOLERANCE))
+
+    def test_lane_end_which(self):
+        """
+        Tests the LaneEnd::Which binding.
+        """
+        self.assertFalse(Which.kStart == Which.kFinish)
+
+    def test_lane_end_default_init(self):
+        """
+        Tests the LaneEnd binding.
+        """
+        dut = LaneEnd()
+        self.assertEqual(None, dut.lane)
+        self.assertEqual(Which.kStart, dut.end)
