@@ -1,3 +1,4 @@
+#include <maliput/api/branch_point.h>
 #include <maliput/api/junction.h>
 #include <maliput/api/lane.h>
 #include <maliput/api/lane_data.h>
@@ -177,6 +178,26 @@ PYBIND11_MODULE(api, m) {
            py::keep_alive<1, 2>())
       .def_readwrite("lane", &api::LaneEnd::lane)
       .def_readwrite("end", &api::LaneEnd::end);
+
+  py::class_<api::LaneEndSet>(m, "LaneEndSet")
+      .def("size", &api::LaneEndSet::size)
+      .def("get", &api::LaneEndSet::get, py::arg("index"), py::return_value_policy::reference);
+
+  py::class_<api::BranchPointId>(m, "BranchPointId")
+      .def(py::init<std::string>())
+      .def("__eq__", &api::BranchPointId::operator==)
+      .def("string", &api::BranchPointId::string, py::return_value_policy::reference_internal)
+      .def("__repr__", [](const api::BranchPointId& id) { return id.string(); });
+
+  py::class_<api::BranchPoint>(m, "BranchPoint")
+      .def("id", &api::BranchPoint::id)
+      .def("road_geometry", &api::BranchPoint::road_geometry, py::return_value_policy::reference_internal)
+      .def("GetConfluentBranches", &api::BranchPoint::GetConfluentBranches, py::arg("end"),
+           py::return_value_policy::reference_internal)
+      .def("GetDefaultBranch", &api::BranchPoint::GetDefaultBranch, py::arg("end"),
+           py::return_value_policy::take_ownership)
+      .def("GetASide", &api::BranchPoint::GetASide, py::return_value_policy::reference_internal)
+      .def("GetBSide", &api::BranchPoint::GetBSide, py::return_value_policy::reference_internal);
 }
 
 }  // namespace bindings
