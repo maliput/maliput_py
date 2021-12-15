@@ -164,6 +164,19 @@ PYBIND11_MODULE(api, m) {
       .def("ranges", &api::LaneSRoute::ranges, py::return_value_policy::reference_internal)
       .def("length", &api::LaneSRoute::length)
       .def("Intersects", &api::LaneSRoute::Intersects, py::arg("lane_s_route"), py::arg("tolerance"));
+
+  py::enum_<api::LaneEnd::Which>(m, "Which")
+      .value("kStart", api::LaneEnd::Which::kStart)
+      .value("kFinish", api::LaneEnd::Which::kFinish)
+      .export_values();
+
+  py::class_<api::LaneEnd>(m, "LaneEnd")
+      .def(py::init<>())
+      .def(py::init<const api::Lane*, api::LaneEnd::Which>(), py::arg("lane"), py::arg("end"),
+           // Keep alive, reference: `self` keeps `Lane*` alive.
+           py::keep_alive<1, 2>())
+      .def_readwrite("lane", &api::LaneEnd::lane)
+      .def_readwrite("end", &api::LaneEnd::end);
 }
 
 }  // namespace bindings
