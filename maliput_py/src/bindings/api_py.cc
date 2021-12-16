@@ -194,8 +194,9 @@ PYBIND11_MODULE(api, m) {
       .def("road_geometry", &api::BranchPoint::road_geometry, py::return_value_policy::reference_internal)
       .def("GetConfluentBranches", &api::BranchPoint::GetConfluentBranches, py::arg("end"),
            py::return_value_policy::reference_internal)
-      .def("GetDefaultBranch", &api::BranchPoint::GetDefaultBranch, py::arg("end"),
-           py::return_value_policy::take_ownership)
+      .def("GetOngoingBranches", &api::BranchPoint::GetOngoingBranches, py::arg("end"),
+           py::return_value_policy::reference_internal)
+      .def("GetDefaultBranch", &api::BranchPoint::GetDefaultBranch, py::arg("end"))
       .def("GetASide", &api::BranchPoint::GetASide, py::return_value_policy::reference_internal)
       .def("GetBSide", &api::BranchPoint::GetBSide, py::return_value_policy::reference_internal);
 }
