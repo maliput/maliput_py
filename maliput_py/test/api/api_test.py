@@ -26,6 +26,7 @@ from maliput.api import (
     Rotation,
     SegmentId,
     SRange,
+    UniqueId,
     Which,
 )
 
@@ -331,3 +332,12 @@ class TestMaliputApi(unittest.TestCase):
         dut = LaneEnd()
         self.assertEqual(None, dut.lane)
         self.assertEqual(Which.kStart, dut.end)
+
+    def test_unique_id(self):
+        """
+        Tests the UniqueId binding.
+        """
+        dut = UniqueId("dut")
+        self.assertEqual("dut", dut.string())
+        self.assertEqual(UniqueId("dut"), dut)
+        self.assertNotEqual(dut, UniqueId("another dut"))

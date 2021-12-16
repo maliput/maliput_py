@@ -18,6 +18,22 @@ target_link_libraries(api_py
     pybind11::module
 )
 
+# api::rules module
+pybind11_add_module(api_rules_py api_rules_py.cc)
+
+set_target_properties(api_rules_py PROPERTIES OUTPUT_NAME "rules")
+
+target_include_directories(api_rules_py
+  PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(api_rules_py
+  PRIVATE
+    maliput::api
+    pybind11::module
+)
+
 # math module
 pybind11_add_module(math_py math_py.cc)
 
@@ -55,6 +71,10 @@ target_link_libraries(plugin_py
 ##############################################################################
 
 install(TARGETS api_py
+  DESTINATION "${PYTHON_INSTALL_DIR}/maliput"
+)
+
+install(TARGETS api_rules_py
   DESTINATION "${PYTHON_INSTALL_DIR}/maliput"
 )
 
