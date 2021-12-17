@@ -9,7 +9,9 @@ import math
 import unittest
 
 from maliput.api import (
+    HBounds,
     InertialPosition,
+    IsoLaneVelocity,
     JunctionId,
     LaneEnd,
     LaneId,
@@ -17,6 +19,7 @@ from maliput.api import (
     LanePositionResult,
     LaneSRange,
     LaneSRoute,
+    RBounds,
     RoadGeometryId,
     RoadPosition,
     RoadPositionResult,
@@ -122,6 +125,99 @@ class TestMaliputApi(unittest.TestCase):
         self.assertAlmostEqual(0., dut.rpy().roll_angle())
         self.assertAlmostEqual(0., dut.rpy().pitch_angle())
         self.assertAlmostEqual(0., dut.rpy().yaw_angle())
+
+    def test_hbounds_default_init(self):
+        """
+        Tests the HBounds default initializer.
+        """
+        dut = HBounds()
+        self.assertAlmostEqual(0., dut.min_h())
+        self.assertAlmostEqual(0., dut.max_h())
+
+    def test_hbounds_custom_init(self):
+        """
+        Tests the HBounds custom initializer.
+        """
+        dut = HBounds(-1.2, 3.4)
+        self.assertAlmostEqual(-1.2, dut.min_h())
+        self.assertAlmostEqual(3.4, dut.max_h())
+
+    def test_hbounds_setter(self):
+        """
+        Tests the HBounds setters
+        """
+        dut = HBounds(-1.2, 3.4)
+        self.assertAlmostEqual(-1.2, dut.min_h())
+        self.assertAlmostEqual(3.4, dut.max_h())
+
+        dut.set_min_h(-2.1)
+        self.assertAlmostEqual(-2.1, dut.min_h())
+
+        dut.set_max_h(4.3)
+        self.assertAlmostEqual(4.3, dut.max_h())
+
+    def test_rbounds_default_init(self):
+        """
+        Tests the RBounds default initializer.
+        """
+        dut = RBounds()
+        self.assertAlmostEqual(0., dut.min_r())
+        self.assertAlmostEqual(0., dut.max_r())
+
+    def test_rbounds_custom_init(self):
+        """
+        Tests the RBounds custom initializer.
+        """
+        dut = RBounds(-1.2, 3.4)
+        self.assertAlmostEqual(-1.2, dut.min_r())
+        self.assertAlmostEqual(3.4, dut.max_r())
+
+    def test_rbounds_setter(self):
+        """
+        Tests the RBounds setters
+        """
+        dut = RBounds(-1.2, 3.4)
+        self.assertAlmostEqual(-1.2, dut.min_r())
+        self.assertAlmostEqual(3.4, dut.max_r())
+
+        dut.set_min_r(-2.1)
+        self.assertAlmostEqual(-2.1, dut.min_r())
+
+        dut.set_max_r(4.3)
+        self.assertAlmostEqual(4.3, dut.max_r())
+
+    def test_iso_lane_velocity_default_initializer(self):
+        """
+        Tests the IsoLaneVelocity default initializer
+        """
+        dut = IsoLaneVelocity()
+        self.assertAlmostEqual(0., dut.sigma_v)
+        self.assertAlmostEqual(0., dut.rho_v)
+        self.assertAlmostEqual(0., dut.eta_v)
+
+    def test_iso_lane_velocity_custom_initializer(self):
+        """
+        Tests the IsoLaneVelocity custom initializer
+        """
+        dut = IsoLaneVelocity(1.2, 3.4, 5.6)
+        self.assertAlmostEqual(1.2, dut.sigma_v)
+        self.assertAlmostEqual(3.4, dut.rho_v)
+        self.assertAlmostEqual(5.6, dut.eta_v)
+
+    def test_iso_lane_velocity_properties(self):
+        """
+        Tests the IsoLaneVelocity properties
+        """
+        dut = IsoLaneVelocity(1.2, 3.4, 5.6)
+
+        dut.sigma_v = 0.2
+        self.assertAlmostEqual(0.2, dut.sigma_v)
+
+        dut.rho_v = 1.4
+        self.assertAlmostEqual(1.4, dut.rho_v)
+
+        dut.eta_v = 2.6
+        self.assertAlmostEqual(2.6, dut.eta_v)
 
     def test_lane_id(self):
         """

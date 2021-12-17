@@ -73,6 +73,29 @@ PYBIND11_MODULE(api, m) {
       .def("quat", &api::Rotation::quat, py::return_value_policy::reference_internal)
       .def("rpy", &api::Rotation::rpy);
 
+  py::class_<api::HBounds>(m, "HBounds")
+      .def(py::init<>())
+      .def(py::init<double, double>(), py::arg("min_h"), py::arg("max_h"))
+      .def("min_h", &api::HBounds::min)
+      .def("max_h", &api::HBounds::max)
+      .def("set_min_h", &api::HBounds::set_min)
+      .def("set_max_h", &api::HBounds::set_max);
+
+  py::class_<api::RBounds>(m, "RBounds")
+      .def(py::init<>())
+      .def(py::init<double, double>(), py::arg("min_r"), py::arg("max_r"))
+      .def("min_r", &api::RBounds::min)
+      .def("max_r", &api::RBounds::max)
+      .def("set_min_r", &api::RBounds::set_min)
+      .def("set_max_r", &api::RBounds::set_max);
+
+  py::class_<api::IsoLaneVelocity>(m, "IsoLaneVelocity")
+      .def(py::init<>())
+      .def(py::init<double, double, double>(), py::arg("sigma"), py::arg("rho"), py::arg("eta"))
+      .def_readwrite("sigma_v", &api::IsoLaneVelocity::sigma_v)
+      .def_readwrite("rho_v", &api::IsoLaneVelocity::rho_v)
+      .def_readwrite("eta_v", &api::IsoLaneVelocity::eta_v);
+
   py::class_<api::RoadNetwork>(m, "RoadNetwork")
       .def("road_geometry", &api::RoadNetwork::road_geometry, py::return_value_policy::reference_internal);
 
@@ -132,14 +155,27 @@ PYBIND11_MODULE(api, m) {
       .def("__repr__", [](const api::LaneId& id) { return id.string(); });
 
   py::class_<api::Lane>(m, "Lane")
-      .def("ToLanePosition", &api::Lane::ToLanePosition)
-      .def("ToInertialPosition", &api::Lane::ToInertialPosition)
-      .def("GetOrientation", &api::Lane::GetOrientation)
-      .def("length", &api::Lane::length)
       .def("id", &api::Lane::id)
       .def("segment", &api::Lane::segment, py::return_value_policy::reference_internal)
+      .def("index", &api::Lane::index)
       .def("to_left", &api::Lane::to_left, py::return_value_policy::reference_internal)
-      .def("to_right", &api::Lane::to_right, py::return_value_policy::reference_internal);
+      .def("to_right", &api::Lane::to_right, py::return_value_policy::reference_internal)
+      .def("length", &api::Lane::length)
+      .def("lane_bounds", &api::Lane::lane_bounds, py::arg("s"))
+      .def("segment_bounds", &api::Lane::segment_bounds, py::arg("s"))
+      .def("elevation_bounds", &api::Lane::elevation_bounds, py::arg("s"), py::arg("r"))
+      .def("ToInertialPosition", &api::Lane::ToInertialPosition)
+      .def("ToLanePosition", &api::Lane::ToLanePosition)
+      .def("GetOrientation", &api::Lane::GetOrientation)
+      .def("EvalMotionDerivatives", &api::Lane::EvalMotionDerivatives, py::arg("lane_postion"), py::arg("velocity"))
+      .def("GetBranchPoint", &api::Lane::GetBranchPoint, py::arg("which_end"))
+      .def("GetConfluentBranches", &api::Lane::GetConfluentBranches, py::arg("which_end"),
+           py::return_value_policy::reference_internal)
+      .def("GetOngoingBranches", &api::Lane::GetOngoingBranches, py::arg("which_end"),
+           py::return_value_policy::reference_internal)
+      .def("GetDefaultBranch", &api::Lane::GetDefaultBranch, py::arg("which_end"),
+           py::return_value_policy::reference_internal)
+      .def("Contains", &api::Lane::Contains, py::arg("lane_position"));
 
   py::class_<api::SRange>(m, "SRange")
       .def(py::init<double, double>(), py::arg("s0"), py::arg("s1"))
