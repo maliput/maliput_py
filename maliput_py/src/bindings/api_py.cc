@@ -10,6 +10,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "bindings/api_rules_py.h"
+
 namespace maliput {
 namespace bindings {
 
@@ -243,6 +245,9 @@ PYBIND11_MODULE(api, m) {
       .def("__repr__", &api::UniqueId::string)
       .def("__eq__", &api::UniqueId::operator==)
       .def("__ne__", &api::UniqueId::operator!=);
+
+  auto rules_module = m.def_submodule("rules", "Maliput rules namespace");
+  api::bindings::InitializeRulesNamespace(&rules_module);
 }
 
 }  // namespace bindings

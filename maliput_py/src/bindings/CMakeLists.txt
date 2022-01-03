@@ -3,32 +3,20 @@
 ##############################################################################
 
 # api module
-pybind11_add_module(api_py api_py.cc)
+pybind11_add_module(api_py
+  api_py.cc
+  api_rules_py.cc
+)
 
 set_target_properties(api_py PROPERTIES OUTPUT_NAME "api")
 
 target_include_directories(api_py
   PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
 target_link_libraries(api_py
-  PRIVATE
-    maliput::api
-    pybind11::module
-)
-
-# api::rules module
-pybind11_add_module(api_rules_py api_rules_py.cc)
-
-set_target_properties(api_rules_py PROPERTIES OUTPUT_NAME "rules")
-
-target_include_directories(api_rules_py
-  PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-)
-
-target_link_libraries(api_rules_py
   PRIVATE
     maliput::api
     pybind11::module
@@ -71,10 +59,6 @@ target_link_libraries(plugin_py
 ##############################################################################
 
 install(TARGETS api_py
-  DESTINATION "${PYTHON_INSTALL_DIR}/maliput"
-)
-
-install(TARGETS api_rules_py
   DESTINATION "${PYTHON_INSTALL_DIR}/maliput"
 )
 

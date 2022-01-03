@@ -14,7 +14,7 @@ from maliput.api import (
     SRange,
     UniqueId,
 )
-from maliput.rules import (
+from maliput.api.rules import (
     Rule,
 )
 

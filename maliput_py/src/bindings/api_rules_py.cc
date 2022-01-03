@@ -1,5 +1,6 @@
+#include "bindings/api_rules_py.h"
+
 #include <maliput/api/rules/rule.h>
-#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 namespace maliput {
@@ -8,9 +9,8 @@ namespace bindings {
 
 namespace py = pybind11;
 
-// TODO(#21): Fix package. It should be maliput.api.rules rather than maliput.rules.
-PYBIND11_MODULE(rules, m) {
-  auto rule_type = py::class_<rules::Rule>(m, "Rule")
+void InitializeRulesNamespace(py::module* m) {
+  auto rule_type = py::class_<rules::Rule>(*m, "Rule")
                        .def(py::init<const rules::Rule::Id&, const rules::Rule::TypeId&, const LaneSRoute&>(),
                             py::arg("id"), py::arg("type_id"), py::arg("zone"))
                        .def("id", &rules::Rule::id, py::return_value_policy::reference)
