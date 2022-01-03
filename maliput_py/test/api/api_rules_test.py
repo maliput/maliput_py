@@ -15,6 +15,7 @@ from maliput.api import (
     UniqueId,
 )
 from maliput.api.rules import (
+    DiscreteValueRule,
     Rule,
 )
 
@@ -80,3 +81,62 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., dut.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., dut.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., dut.zone().length(), 1e-9)
+
+    def test_discrete_value_default_constructor(self):
+        """
+        Tests the DiscreteValueRule::Discrete default constructor binding.
+        """
+        dut = DiscreteValueRule.DiscreteValue()
+        self.assertEqual(Rule.State.kStrict, dut.severity)
+        self.assertEqual({}, dut.related_rules)
+        self.assertEqual({}, dut.related_unique_ids)
+        self.assertEqual("", dut.value)
+
+    def test_discrete_value_non_default_constructor(self):
+        """
+        Tests the DiscreteValueRule::Discrete non-default constructor binding.
+        """
+        severity = Rule.State.kBestEffort
+        related_rules = {"type_I": [Rule.Id("id_a"), Rule.Id("id_b")],
+                         "type_II": [Rule.Id("id_c")]}
+        related_unique_ids = {"type_III": [UniqueId("uid_a"), UniqueId("uid_b")],
+                              "type_IV": [UniqueId("id_c")]}
+        value = "a value"
+        dut = DiscreteValueRule.DiscreteValue(severity, related_rules, related_unique_ids, value)
+        self.assertEqual(severity, dut.severity)
+        self.assertEqual(related_rules, dut.related_rules)
+        self.assertEqual(related_unique_ids, dut.related_unique_ids)
+        self.assertEqual(value, dut.value)
+        self.assertEqual(DiscreteValueRule.DiscreteValue(severity, related_rules,
+                                                         related_unique_ids, value),
+                         dut)
+        self.assertNotEqual(DiscreteValueRule.DiscreteValue(severity, related_rules,
+                                                            related_unique_ids, "another value"),
+                            dut)
+
+    def test_discrete_value_rule(self):
+        """
+        Tests the DiscreteValueRule binding.
+        """
+        severity = Rule.State.kBestEffort
+        related_rules = {"type_I": [Rule.Id("id_a"), Rule.Id("id_b")],
+                         "type_II": [Rule.Id("id_c")]}
+        related_unique_ids = {"type_III": [UniqueId("uid_a"), UniqueId("uid_b")],
+                              "type_IV": [UniqueId("id_c")]}
+        value = "a value"
+        discrete_value = DiscreteValueRule.DiscreteValue(severity, related_rules,
+                                                         related_unique_ids, value)
+
+        rule_id = Rule.Id("id")
+        type_id = Rule.TypeId("type_id")
+        zone = LaneSRoute([LaneSRange(LaneId("lane_1"), SRange(0., 100.))])
+        dut = DiscreteValueRule(rule_id, type_id, zone, [discrete_value])
+
+        self.assertEqual(rule_id, dut.id())
+        self.assertEqual(type_id, dut.type_id())
+        self.assertEqual(1, len(dut.zone().ranges()))
+        self.assertEqual(LaneId("lane_1"), dut.zone().ranges()[0].lane_id())
+        self.assertEqual(0., dut.zone().ranges()[0].s_range().s0())
+        self.assertEqual(100., dut.zone().ranges()[0].s_range().s1())
+        self.assertAlmostEqual(100., dut.zone().length(), 1e-9)
+        self.assertEqual([discrete_value], dut.values())

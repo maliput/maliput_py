@@ -1,5 +1,6 @@
 #include "bindings/api_rules_py.h"
 
+#include <maliput/api/rules/discrete_value_rule.h>
 #include <maliput/api/rules/rule.h>
 #include <pybind11/stl.h>
 
@@ -40,6 +41,21 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("severity", &rules::Rule::State::severity)
       .def_readwrite("related_rules", &rules::Rule::State::related_rules)
       .def_readwrite("related_unique_ids", &rules::Rule::State::related_unique_ids);
+
+  auto discrete_value_rule_type =
+      py::class_<rules::DiscreteValueRule, rules::Rule>(*m, "DiscreteValueRule")
+          .def(py::init<const rules::Rule::Id&, const rules::Rule::TypeId&, const LaneSRoute&,
+                        const std::vector<rules::DiscreteValueRule::DiscreteValue>&>(),
+               py::arg("id"), py::arg("type_id"), py::arg("zone"), py::arg("value"))
+          .def("values", &rules::DiscreteValueRule::values, py::return_value_policy::reference);
+
+  py::class_<rules::DiscreteValueRule::DiscreteValue, rules::Rule::State>(discrete_value_rule_type, "DiscreteValue")
+      .def(py::init<>())
+      .def(py::init<int, rules::Rule::RelatedRules, rules::Rule::RelatedUniqueIds, std::string>(), py::arg("severity"),
+           py::arg("related_rules"), py::arg("related_unique_ids"), py::arg("value"))
+      .def("__eq__", &rules::DiscreteValueRule::DiscreteValue::operator==)
+      .def("__ne__", &rules::DiscreteValueRule::DiscreteValue::operator!=)
+      .def_readwrite("value", &rules::DiscreteValueRule::DiscreteValue::value);
 }
 
 }  // namespace bindings
