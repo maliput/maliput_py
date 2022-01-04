@@ -1,6 +1,7 @@
 #include "bindings/api_rules_py.h"
 
 #include <maliput/api/rules/discrete_value_rule.h>
+#include <maliput/api/rules/range_value_rule.h>
 #include <maliput/api/rules/rule.h>
 #include <pybind11/stl.h>
 
@@ -46,7 +47,7 @@ void InitializeRulesNamespace(py::module* m) {
       py::class_<rules::DiscreteValueRule, rules::Rule>(*m, "DiscreteValueRule")
           .def(py::init<const rules::Rule::Id&, const rules::Rule::TypeId&, const LaneSRoute&,
                         const std::vector<rules::DiscreteValueRule::DiscreteValue>&>(),
-               py::arg("id"), py::arg("type_id"), py::arg("zone"), py::arg("value"))
+               py::arg("id"), py::arg("type_id"), py::arg("zone"), py::arg("values"))
           .def("values", &rules::DiscreteValueRule::values, py::return_value_policy::reference);
 
   py::class_<rules::DiscreteValueRule::DiscreteValue, rules::Rule::State>(discrete_value_rule_type, "DiscreteValue")
@@ -56,6 +57,24 @@ void InitializeRulesNamespace(py::module* m) {
       .def("__eq__", &rules::DiscreteValueRule::DiscreteValue::operator==)
       .def("__ne__", &rules::DiscreteValueRule::DiscreteValue::operator!=)
       .def_readwrite("value", &rules::DiscreteValueRule::DiscreteValue::value);
+
+  auto range_value_rule_type = py::class_<rules::RangeValueRule, rules::Rule>(*m, "RangeValueRule")
+                                   .def(py::init<const rules::Rule::Id&, const rules::Rule::TypeId&, const LaneSRoute&,
+                                                 const std::vector<rules::RangeValueRule::Range>&>(),
+                                        py::arg("id"), py::arg("type_id"), py::arg("zone"), py::arg("ranges"))
+                                   .def("ranges", &rules::RangeValueRule::ranges, py::return_value_policy::reference);
+
+  py::class_<rules::RangeValueRule::Range, rules::Rule::State>(range_value_rule_type, "Range")
+      .def(py::init<>())
+      .def(py::init<int, rules::Rule::RelatedRules, rules::Rule::RelatedUniqueIds, std::string, double, double>(),
+           py::arg("severity"), py::arg("related_rules"), py::arg("related_unique_ids"), py::arg("description"),
+           py::arg("min"), py::arg("max"))
+      .def("__eq__", &rules::RangeValueRule::Range::operator==)
+      .def("__ne__", &rules::RangeValueRule::Range::operator!=)
+      .def("__lt__", &rules::RangeValueRule::Range::operator<)
+      .def_readwrite("description", &rules::RangeValueRule::Range::description)
+      .def_readwrite("min", &rules::RangeValueRule::Range::min)
+      .def_readwrite("max", &rules::RangeValueRule::Range::max);
 }
 
 }  // namespace bindings
