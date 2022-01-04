@@ -85,7 +85,7 @@ class TestMaliputApiRules(unittest.TestCase):
 
     def test_discrete_value_default_constructor(self):
         """
-        Tests the DiscreteValueRule::Discrete default constructor binding.
+        Tests the DiscreteValueRule::DiscreteValue default constructor binding.
         """
         dut = DiscreteValueRule.DiscreteValue()
         self.assertEqual(Rule.State.kStrict, dut.severity)
