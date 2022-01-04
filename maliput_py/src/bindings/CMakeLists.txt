@@ -3,12 +3,16 @@
 ##############################################################################
 
 # api module
-pybind11_add_module(api_py api_py.cc)
+pybind11_add_module(api_py
+  api_py.cc
+  api_rules_py.cc
+)
 
 set_target_properties(api_py PROPERTIES OUTPUT_NAME "api")
 
 target_include_directories(api_py
   PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 

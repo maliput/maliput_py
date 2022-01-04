@@ -6,4 +6,9 @@ if (NOT ${SANITIZERS})
     # Avoid pytest from importing the module stub
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
+  ament_add_pytest_test(api_rules_pytest
+    api_rules_test.py
+    # Avoid pytest from importing the module stub
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  )
 endif()

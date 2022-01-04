@@ -6,8 +6,11 @@
 #include <maliput/api/road_geometry.h>
 #include <maliput/api/road_network.h>
 #include <maliput/api/segment.h>
+#include <maliput/api/unique_id.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
+#include "bindings/api_rules_py.h"
 
 namespace maliput {
 namespace bindings {
@@ -235,6 +238,16 @@ PYBIND11_MODULE(api, m) {
       .def("GetDefaultBranch", &api::BranchPoint::GetDefaultBranch, py::arg("end"))
       .def("GetASide", &api::BranchPoint::GetASide, py::return_value_policy::reference_internal)
       .def("GetBSide", &api::BranchPoint::GetBSide, py::return_value_policy::reference_internal);
+
+  py::class_<api::UniqueId>(m, "UniqueId")
+      .def(py::init<const std::string&>(), py::arg("string"))
+      .def("string", &api::UniqueId::string)
+      .def("__repr__", &api::UniqueId::string)
+      .def("__eq__", &api::UniqueId::operator==)
+      .def("__ne__", &api::UniqueId::operator!=);
+
+  auto rules_module = m.def_submodule("rules", "Maliput rules namespace");
+  api::bindings::InitializeRulesNamespace(&rules_module);
 }
 
 }  // namespace bindings
