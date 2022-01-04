@@ -18,6 +18,7 @@ from maliput.api.rules import (
     DiscreteValueRule,
     RangeValueRule,
     Rule,
+    RuleRegistry,
 )
 
 
@@ -213,3 +214,182 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(100., dut.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., dut.zone().length(), 1e-9)
         self.assertEqual([range_value], dut.ranges())
+
+    def test_empty_rule_registry(self):
+        """
+        Tests the RuleRegistry constructor and empty registry bindings.
+        """
+        dut = RuleRegistry()
+        self.assertEqual({}, dut.RangeValueRuleTypes())
+        self.assertEqual({}, dut.DiscreteValueRuleTypes())
+
+    def test_rule_registry_register_and_retrieve_ranges(self):
+        """
+        Tests the RuleRegistry::RegisterRangeValueRule and
+        RuleRegistry::GetPossibleStatesOfRuleType bindings.
+        """
+        range_type_id_a = Rule.TypeId("range_type_id_a")
+        range_a = RangeValueRule.Range(
+            Rule.State.kBestEffort, {"rule_type_I": [Rule.Id("id_a")]},
+            {"type_II": [UniqueId("uid_a"), UniqueId("uid_b")]}, "a description", 12.34, 56.78)
+
+        range_type_id_b = Rule.TypeId("range_type_id_b")
+        range_b = RangeValueRule.Range(
+            Rule.State.kStrict, {"rule_type_II": [Rule.Id("id_b")]},
+            {"type_III": [UniqueId("uid_c"), UniqueId("uid_d")]}, "a description", 12.34, 56.78)
+
+        dut = RuleRegistry()
+        dut.RegisterRangeValueRule(range_type_id_a, [range_a])
+        dut.RegisterRangeValueRule(range_type_id_b, [range_b])
+
+        self.assertEqual({range_type_id_a: [range_a], range_type_id_b: [range_b]},
+                         dut.RangeValueRuleTypes())
+
+        result = dut.GetPossibleStatesOfRuleType(range_type_id_a)
+        self.assertTrue(result is not None)
+        self.assertEqual(range_type_id_a, result.type_id)
+        self.assertEqual([range_a], result.rule_values)
+
+        result = dut.GetPossibleStatesOfRuleType(range_type_id_b)
+        self.assertTrue(result is not None)
+        self.assertEqual(range_type_id_b, result.type_id)
+        self.assertEqual([range_b], result.rule_values)
+
+        result = dut.GetPossibleStatesOfRuleType(Rule.TypeId("does not exist"))
+        self.assertTrue(result is None)
+
+    def test_rule_registry_register_and_retrieve_discrete_values(self):
+        """
+        Tests the RuleRegistry::RegisterDiscreteValueRule and
+        RuleRegistry::GetPossibleStatesOfRuleType bindings.
+        """
+        discrete_value_type_id_a = Rule.TypeId("discrete_value_type_id_a")
+        discrete_value_a = DiscreteValueRule.DiscreteValue(
+            Rule.State.kBestEffort, {"rule_type_I": [Rule.Id("id_a")]},
+            {"type_II": [UniqueId("uid_a"), UniqueId("uid_b")]}, "value 1")
+
+        discrete_value_type_id_b = Rule.TypeId("discrete_value_type_id_b")
+        discrete_value_b = DiscreteValueRule.DiscreteValue(
+            Rule.State.kStrict, {"rule_type_II": [Rule.Id("id_a")]},
+            {"type_III": [UniqueId("uid_c"), UniqueId("uid_d")]}, "value 2")
+
+        dut = RuleRegistry()
+        dut.RegisterDiscreteValueRule(discrete_value_type_id_a, [discrete_value_a])
+        dut.RegisterDiscreteValueRule(discrete_value_type_id_b,
+                                      [discrete_value_a, discrete_value_b])
+
+        self.assertEqual({discrete_value_type_id_a: [discrete_value_a],
+                          discrete_value_type_id_b: [discrete_value_a, discrete_value_b]},
+                         dut.DiscreteValueRuleTypes())
+
+        result = dut.GetPossibleStatesOfRuleType(discrete_value_type_id_a)
+        self.assertTrue(result is not None)
+        self.assertEqual(discrete_value_type_id_a, result.type_id)
+        self.assertEqual([discrete_value_a], result.rule_values)
+
+        result = dut.GetPossibleStatesOfRuleType(discrete_value_type_id_b)
+        self.assertTrue(result is not None)
+        self.assertEqual(discrete_value_type_id_b, result.type_id)
+        self.assertEqual([discrete_value_a, discrete_value_b], result.rule_values)
+
+        result = dut.GetPossibleStatesOfRuleType(Rule.TypeId("does not exist"))
+        self.assertTrue(result is None)
+
+    def test_rule_registry_build_range_value_rule(self):
+        """
+        Tests the RuleRegistry::BuildRangeValueRule binding.
+        """
+        range_type_id = Rule.TypeId("range_type_id")
+        range_a = RangeValueRule.Range(
+            Rule.State.kBestEffort, {"rule_type_I": [Rule.Id("id_a")]},
+            {"type_II": [UniqueId("uid_a"), UniqueId("uid_b")]}, "a description", 12.34, 56.78)
+        range_b = RangeValueRule.Range(
+            Rule.State.kStrict, {"rule_type_II": [Rule.Id("id_b")]},
+            {"type_III": [UniqueId("uid_c"), UniqueId("uid_d")]}, "a description", 12.34, 56.78)
+
+        dut = RuleRegistry()
+        dut.RegisterRangeValueRule(range_type_id, [range_a, range_b])
+
+        rule_id = Rule.Id("rule_id")
+        zone = LaneSRoute([LaneSRange(LaneId("lane_1"), SRange(0., 100.))])
+
+        rule_a = dut.BuildRangeValueRule(rule_id, range_type_id, zone, [range_a])
+        self.assertEqual(rule_id, rule_a.id())
+        self.assertEqual(range_type_id, rule_a.type_id())
+        self.assertEqual(1, len(rule_a.zone().ranges()))
+        self.assertEqual(LaneId("lane_1"), rule_a.zone().ranges()[0].lane_id())
+        self.assertEqual(0., rule_a.zone().ranges()[0].s_range().s0())
+        self.assertEqual(100., rule_a.zone().ranges()[0].s_range().s1())
+        self.assertAlmostEqual(100., rule_a.zone().length(), 1e-9)
+        self.assertEqual([range_a], rule_a.ranges())
+
+        rule_b = dut.BuildRangeValueRule(rule_id, range_type_id, zone, [range_b])
+        self.assertEqual(rule_id, rule_b.id())
+        self.assertEqual(range_type_id, rule_b.type_id())
+        self.assertEqual(1, len(rule_b.zone().ranges()))
+        self.assertEqual(LaneId("lane_1"), rule_b.zone().ranges()[0].lane_id())
+        self.assertEqual(0., rule_b.zone().ranges()[0].s_range().s0())
+        self.assertEqual(100., rule_b.zone().ranges()[0].s_range().s1())
+        self.assertAlmostEqual(100., rule_b.zone().length(), 1e-9)
+        self.assertEqual([range_b], rule_b.ranges())
+
+        rule_ab = dut.BuildRangeValueRule(rule_id, range_type_id, zone, [range_a, range_b])
+        self.assertEqual(rule_id, rule_ab.id())
+        self.assertEqual(range_type_id, rule_ab.type_id())
+        self.assertEqual(1, len(rule_ab.zone().ranges()))
+        self.assertEqual(LaneId("lane_1"), rule_ab.zone().ranges()[0].lane_id())
+        self.assertEqual(0., rule_ab.zone().ranges()[0].s_range().s0())
+        self.assertEqual(100., rule_ab.zone().ranges()[0].s_range().s1())
+        self.assertAlmostEqual(100., rule_ab.zone().length(), 1e-9)
+        self.assertEqual([range_a, range_b], rule_ab.ranges())
+
+    def test_rule_registry_build_discrete_value_rule(self):
+        """
+        Tests the RuleRegistry::BuildDiscreteValueRule binding.
+        """
+        discrete_value_type_id = Rule.TypeId("discrete_value_type_id")
+        discrete_value_a = DiscreteValueRule.DiscreteValue(
+            Rule.State.kBestEffort, {"rule_type_I": [Rule.Id("id_a")]},
+            {"type_II": [UniqueId("uid_a"), UniqueId("uid_b")]}, "value 1")
+        discrete_value_b = DiscreteValueRule.DiscreteValue(
+            Rule.State.kStrict, {"rule_type_II": [Rule.Id("id_a")]},
+            {"type_III": [UniqueId("uid_c"), UniqueId("uid_d")]}, "value 2")
+
+        dut = RuleRegistry()
+        dut.RegisterDiscreteValueRule(discrete_value_type_id, [discrete_value_a, discrete_value_b])
+
+        rule_id = Rule.Id("rule_id")
+        zone = LaneSRoute([LaneSRange(LaneId("lane_1"), SRange(0., 100.))])
+
+        rule_a = dut.BuildDiscreteValueRule(rule_id, discrete_value_type_id, zone,
+                                            [discrete_value_a])
+        self.assertEqual(rule_id, rule_a.id())
+        self.assertEqual(discrete_value_type_id, rule_a.type_id())
+        self.assertEqual(1, len(rule_a.zone().ranges()))
+        self.assertEqual(LaneId("lane_1"), rule_a.zone().ranges()[0].lane_id())
+        self.assertEqual(0., rule_a.zone().ranges()[0].s_range().s0())
+        self.assertEqual(100., rule_a.zone().ranges()[0].s_range().s1())
+        self.assertAlmostEqual(100., rule_a.zone().length(), 1e-9)
+        self.assertEqual([discrete_value_a], rule_a.values())
+
+        rule_b = dut.BuildDiscreteValueRule(rule_id, discrete_value_type_id, zone,
+                                            [discrete_value_b])
+        self.assertEqual(rule_id, rule_b.id())
+        self.assertEqual(discrete_value_type_id, rule_b.type_id())
+        self.assertEqual(1, len(rule_b.zone().ranges()))
+        self.assertEqual(LaneId("lane_1"), rule_b.zone().ranges()[0].lane_id())
+        self.assertEqual(0., rule_b.zone().ranges()[0].s_range().s0())
+        self.assertEqual(100., rule_b.zone().ranges()[0].s_range().s1())
+        self.assertAlmostEqual(100., rule_b.zone().length(), 1e-9)
+        self.assertEqual([discrete_value_b], rule_b.values())
+
+        rule_ab = dut.BuildDiscreteValueRule(rule_id, discrete_value_type_id, zone,
+                                             [discrete_value_a, discrete_value_b])
+        self.assertEqual(rule_id, rule_ab.id())
+        self.assertEqual(discrete_value_type_id, rule_ab.type_id())
+        self.assertEqual(1, len(rule_ab.zone().ranges()))
+        self.assertEqual(LaneId("lane_1"), rule_ab.zone().ranges()[0].lane_id())
+        self.assertEqual(0., rule_ab.zone().ranges()[0].s_range().s0())
+        self.assertEqual(100., rule_ab.zone().ranges()[0].s_range().s1())
+        self.assertAlmostEqual(100., rule_ab.zone().length(), 1e-9)
+        self.assertEqual([discrete_value_a, discrete_value_b], rule_ab.values())

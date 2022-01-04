@@ -3,6 +3,9 @@
 #include <maliput/api/rules/discrete_value_rule.h>
 #include <maliput/api/rules/range_value_rule.h>
 #include <maliput/api/rules/rule.h>
+#include <maliput/api/rules/rule_registry.h>
+#include <pybind11/operators.h>
+#include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 namespace maliput {
@@ -23,12 +26,14 @@ void InitializeRulesNamespace(py::module* m) {
       .def(py::init<std::string>())
       .def("__eq__", &rules::Rule::Id::operator==)
       .def("string", &rules::Rule::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
       .def("__repr__", [](const rules::Rule::Id& id) { return id.string(); });
 
   py::class_<rules::Rule::TypeId>(rule_type, "TypeId")
       .def(py::init<std::string>())
       .def("__eq__", &rules::Rule::TypeId::operator==)
       .def("string", &rules::Rule::TypeId::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
       .def("__repr__", [](const api::rules::Rule::TypeId& type_id) { return type_id.string(); });
 
   py::class_<rules::Rule::State>(rule_type, "State")
@@ -75,6 +80,31 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("description", &rules::RangeValueRule::Range::description)
       .def_readwrite("min", &rules::RangeValueRule::Range::min)
       .def_readwrite("max", &rules::RangeValueRule::Range::max);
+
+  auto rule_registry_type =
+      py::class_<rules::RuleRegistry>(*m, "RuleRegistry")
+          .def(py::init<>())
+          .def("RegisterRangeValueRule", &rules::RuleRegistry::RegisterRangeValueRule, py::arg("type_id"),
+               py::arg("all_possible_ranges"))
+          .def("RegisterDiscreteValueRule", &rules::RuleRegistry::RegisterDiscreteValueRule, py::arg("type_id"),
+               py::arg("all_possible_values"))
+          .def("RangeValueRuleTypes", &rules::RuleRegistry::RangeValueRuleTypes,
+               py::return_value_policy::reference_internal)
+          .def("DiscreteValueRuleTypes", &rules::RuleRegistry::DiscreteValueRuleTypes,
+               py::return_value_policy::reference_internal)
+          .def("GetPossibleStatesOfRuleType", &rules::RuleRegistry::GetPossibleStatesOfRuleType, py::arg("type_id"))
+          .def("GetPossibleStatesOfRuleType", &rules::RuleRegistry::GetPossibleStatesOfRuleType, py::arg("type_id"))
+          .def("BuildRangeValueRule", &rules::RuleRegistry::BuildRangeValueRule, py::arg("id"), py::arg("type_id"),
+               py::arg("zone"), py::arg("ranges"))
+          .def("BuildDiscreteValueRule", &rules::RuleRegistry::BuildDiscreteValueRule, py::arg("id"),
+               py::arg("type_id"), py::arg("zone"), py::arg("values"));
+
+  py::class_<rules::RuleRegistry::QueryResult>(rule_registry_type, "QueryResult")
+      .def(py::init<rules::Rule::TypeId, std::variant<rules::RuleRegistry::QueryResult::Ranges,
+                                                      rules::RuleRegistry::QueryResult::DiscreteValues>>(),
+           py::arg("type_id"), py::arg("rule_values"))
+      .def_readwrite("type_id", &rules::RuleRegistry::QueryResult::type_id)
+      .def_readwrite("rule_values", &rules::RuleRegistry::QueryResult::rule_values);
 }
 
 }  // namespace bindings
