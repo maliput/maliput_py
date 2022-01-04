@@ -95,7 +95,7 @@ class TestMaliputApiRules(unittest.TestCase):
 
     def test_discrete_value_non_default_constructor(self):
         """
-        Tests the DiscreteValueRule::Discrete non-default constructor binding.
+        Tests the DiscreteValueRule::DiscreteValue non-default constructor binding.
         """
         severity = Rule.State.kBestEffort
         related_rules = {"type_I": [Rule.Id("id_a"), Rule.Id("id_b")],
