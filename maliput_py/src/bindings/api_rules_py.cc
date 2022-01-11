@@ -93,7 +93,6 @@ void InitializeRulesNamespace(py::module* m) {
           .def("DiscreteValueRuleTypes", &rules::RuleRegistry::DiscreteValueRuleTypes,
                py::return_value_policy::reference_internal)
           .def("GetPossibleStatesOfRuleType", &rules::RuleRegistry::GetPossibleStatesOfRuleType, py::arg("type_id"))
-          .def("GetPossibleStatesOfRuleType", &rules::RuleRegistry::GetPossibleStatesOfRuleType, py::arg("type_id"))
           .def("BuildRangeValueRule", &rules::RuleRegistry::BuildRangeValueRule, py::arg("id"), py::arg("type_id"),
                py::arg("zone"), py::arg("ranges"))
           .def("BuildDiscreteValueRule", &rules::RuleRegistry::BuildDiscreteValueRule, py::arg("id"),
