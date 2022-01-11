@@ -1,9 +1,16 @@
 #include "bindings/api_rules_py.h"
 
 #include <maliput/api/rules/discrete_value_rule.h>
+// TODO: Should be removed as DirectionUsageRule gets deprecated.
+#include <maliput/api/rules/direction_usage_rule.h>
 #include <maliput/api/rules/range_value_rule.h>
 #include <maliput/api/rules/rule.h>
+// TODO: Should be removed as RightOfWayRule gets deprecated.
+#include <maliput/api/rules/right_of_way_rule.h>
+#include <maliput/api/rules/road_rulebook.h>
 #include <maliput/api/rules/rule_registry.h>
+// TODO: Should be removed as SpeedLimitRule gets deprecated.
+#include <maliput/api/rules/speed_limit_rule.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -104,6 +111,59 @@ void InitializeRulesNamespace(py::module* m) {
            py::arg("type_id"), py::arg("rule_values"))
       .def_readwrite("type_id", &rules::RuleRegistry::QueryResult::type_id)
       .def_readwrite("rule_values", &rules::RuleRegistry::QueryResult::rule_values);
+
+  // @{ TODO: Should be removed as these types get deprecated.
+  auto rowr_type = py::class_<rules::RightOfWayRule>(*m, "RightOfWayRule").def("id", &rules::RightOfWayRule::id);
+
+  py::class_<rules::RightOfWayRule::Id>(rowr_type, "Id")
+      .def(py::init<std::string>())
+      .def("__eq__", &rules::RightOfWayRule::Id::operator==)
+      .def("string", &rules::RightOfWayRule::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::RightOfWayRule::Id& id) { return id.string(); });
+
+  auto dur_type =
+      py::class_<rules::DirectionUsageRule>(*m, "DirectionUsageRule").def("id", &rules::DirectionUsageRule::id);
+
+  py::class_<rules::DirectionUsageRule::Id>(dur_type, "Id")
+      .def(py::init<std::string>())
+      .def("__eq__", &rules::DirectionUsageRule::Id::operator==)
+      .def("string", &rules::DirectionUsageRule::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::DirectionUsageRule::Id& id) { return id.string(); });
+
+  auto slr_type = py::class_<rules::SpeedLimitRule>(*m, "SpeedLimitRule").def("id", &rules::SpeedLimitRule::id);
+
+  py::class_<rules::SpeedLimitRule::Id>(slr_type, "Id")
+      .def(py::init<std::string>())
+      .def("__eq__", &rules::SpeedLimitRule::Id::operator==)
+      .def("string", &rules::SpeedLimitRule::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::SpeedLimitRule::Id& id) { return id.string(); });
+  // @}
+
+  auto road_rulebook_type =
+      py::class_<rules::RoadRulebook>(*m, "RoadRulebook")
+          .def("FindRules", &rules::RoadRulebook::FindRules, py::arg("ranges"), py::arg("tolerance"))
+          .def("Rules", &rules::RoadRulebook::Rules)
+          .def("GetRule",
+               py::overload_cast<const rules::RightOfWayRule::Id&>(&rules::RoadRulebook::GetRule, py::const_),
+               py::arg("id"))
+          .def("GetRule",
+               py::overload_cast<const rules::SpeedLimitRule::Id&>(&rules::RoadRulebook::GetRule, py::const_),
+               py::arg("id"))
+          .def("GetRule",
+               py::overload_cast<const rules::DirectionUsageRule::Id&>(&rules::RoadRulebook::GetRule, py::const_),
+               py::arg("id"))
+          .def("GetDiscreteValueRule", &rules::RoadRulebook::GetDiscreteValueRule, py::arg("id"))
+          .def("GetRangeValueRule", &rules::RoadRulebook::GetRangeValueRule, py::arg("id"));
+
+  py::class_<rules::RoadRulebook::QueryResults>(road_rulebook_type, "QueryResults")
+      .def_readwrite("right_of_way", &rules::RoadRulebook::QueryResults::right_of_way)
+      .def_readwrite("speed_limit", &rules::RoadRulebook::QueryResults::speed_limit)
+      .def_readwrite("direction_usage", &rules::RoadRulebook::QueryResults::direction_usage)
+      .def_readwrite("discrete_value_rules", &rules::RoadRulebook::QueryResults::discrete_value_rules)
+      .def_readwrite("range_value_rules", &rules::RoadRulebook::QueryResults::range_value_rules);
 }
 
 }  // namespace bindings

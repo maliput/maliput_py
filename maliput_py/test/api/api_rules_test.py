@@ -15,10 +15,14 @@ from maliput.api import (
     UniqueId,
 )
 from maliput.api.rules import (
+    DirectionUsageRule,
     DiscreteValueRule,
     RangeValueRule,
+    RoadRulebook,
+    RightOfWayRule,
     Rule,
     RuleRegistry,
+    SpeedLimitRule,
 )
 
 
@@ -393,3 +397,30 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(100., rule_ab.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., rule_ab.zone().length(), 1e-9)
         self.assertEqual([discrete_value_a, discrete_value_b], rule_ab.values())
+
+    def test_deprecated_rules(self):
+        """
+        Tests the bindings to the DirectionUsageRule, RightOfWayRule and SpeedLimitRule Ids.
+        """
+        dur_id = DirectionUsageRule.Id("dur_id")
+        self.assertEqual("dur_id", dur_id.string())
+        self.assertEqual(DirectionUsageRule.Id("dur_id"), dur_id)
+
+        rowr_id = RightOfWayRule.Id("rowr_id")
+        self.assertEqual("rowr_id", rowr_id.string())
+        self.assertEqual(RightOfWayRule.Id("rowr_id"), rowr_id)
+
+        slr_id = SpeedLimitRule.Id("slr_id")
+        self.assertEqual("slr_id", slr_id.string())
+        self.assertEqual(SpeedLimitRule.Id("slr_id"), slr_id)
+
+    def test_roadrulebook_methods(self):
+        """
+        Tests that RoadRulebook exposes the right methods.
+        """
+        dut_type_methods = dir(RoadRulebook)
+        self.assertTrue('FindRules' in dut_type_methods)
+        self.assertTrue('Rules' in dut_type_methods)
+        self.assertTrue('GetRule' in dut_type_methods)
+        self.assertTrue('GetDiscreteValueRule' in dut_type_methods)
+        self.assertTrue('GetRangeValueRule' in dut_type_methods)
