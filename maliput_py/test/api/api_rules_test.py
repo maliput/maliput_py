@@ -270,7 +270,7 @@ class TestMaliputApiRules(unittest.TestCase):
 
         discrete_value_type_id_b = Rule.TypeId("discrete_value_type_id_b")
         discrete_value_b = DiscreteValueRule.DiscreteValue(
-            Rule.State.kStrict, {"rule_type_II": [Rule.Id("id_a")]},
+            Rule.State.kStrict, {"rule_type_II": [Rule.Id("id_b")]},
             {"type_III": [UniqueId("uid_c"), UniqueId("uid_d")]}, "value 2")
 
         dut = RuleRegistry()
