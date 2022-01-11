@@ -457,7 +457,7 @@ class TestMaliputApiRules(unittest.TestCase):
 
     def test_bulbcolormapper(self):
         """
-        Tests that BulbColorMapper returns the right dictionary of BulbColors to their string
+        Tests that BulbColorMapper returns a dictionary of BulbColors to their string
         representation.
         """
         bulb_colors_dict = BulbColorMapper()
@@ -475,7 +475,7 @@ class TestMaliputApiRules(unittest.TestCase):
 
     def test_bulbstatemapper(self):
         """
-        Tests that BulbStateMapper returns the right dictionary of BulbStates to their string
+        Tests that BulbStateMapper returns a dictionary of BulbStates to their string
         representation.
         """
         bulb_states_dict = BulbStateMapper()
@@ -491,7 +491,7 @@ class TestMaliputApiRules(unittest.TestCase):
 
     def test_bulbtypemapper(self):
         """
-        Tests that BulbTypeMapper returns the right dictionary of BulbType to their string
+        Tests that BulbTypeMapper returns a dictionary of BulbType to their string
         representation.
         """
         bulb_types_dict = BulbTypeMapper()
