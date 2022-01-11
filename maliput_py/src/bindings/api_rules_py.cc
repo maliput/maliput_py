@@ -1,9 +1,11 @@
 #include "bindings/api_rules_py.h"
 
 #include <maliput/api/rules/discrete_value_rule.h>
+#include <maliput/api/rules/discrete_value_rule_state_provider.h>
 // TODO: Should be removed as DirectionUsageRule gets deprecated.
 #include <maliput/api/rules/direction_usage_rule.h>
 #include <maliput/api/rules/range_value_rule.h>
+#include <maliput/api/rules/range_value_rule_state_provider.h>
 #include <maliput/api/rules/rule.h>
 // TODO: Should be removed as RightOfWayRule gets deprecated.
 #include <maliput/api/rules/right_of_way_rule.h>
@@ -164,6 +166,30 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("direction_usage", &rules::RoadRulebook::QueryResults::direction_usage)
       .def_readwrite("discrete_value_rules", &rules::RoadRulebook::QueryResults::discrete_value_rules)
       .def_readwrite("range_value_rules", &rules::RoadRulebook::QueryResults::range_value_rules);
+
+  auto dvr_state_provider_type = py::class_<rules::DiscreteValueRuleStateProvider>(*m, "DiscreteValueRuleStateProvider")
+                                     .def("GetState", &rules::DiscreteValueRuleStateProvider::GetState, py::arg("id"));
+
+  auto dvr_state_provider_state_result_type =
+      py::class_<rules::DiscreteValueRuleStateProvider::StateResult>(dvr_state_provider_type, "StateResult")
+          .def_readwrite("state", &rules::DiscreteValueRuleStateProvider::StateResult::state)
+          .def_readwrite("next", &rules::DiscreteValueRuleStateProvider::StateResult::next);
+
+  py::class_<rules::DiscreteValueRuleStateProvider::StateResult::Next>(dvr_state_provider_state_result_type, "Next")
+      .def_readwrite("state", &rules::DiscreteValueRuleStateProvider::StateResult::Next::state)
+      .def_readwrite("duration_until", &rules::DiscreteValueRuleStateProvider::StateResult::Next::duration_until);
+
+  auto rvr_state_provider_type = py::class_<rules::RangeValueRuleStateProvider>(*m, "RangeValueRuleStateProvider")
+                                     .def("GetState", &rules::RangeValueRuleStateProvider::GetState, py::arg("id"));
+
+  auto rvr_state_provider_state_result_type =
+      py::class_<rules::RangeValueRuleStateProvider::StateResult>(rvr_state_provider_type, "StateResult")
+          .def_readwrite("state", &rules::RangeValueRuleStateProvider::StateResult::state)
+          .def_readwrite("next", &rules::RangeValueRuleStateProvider::StateResult::next);
+
+  py::class_<rules::RangeValueRuleStateProvider::StateResult::Next>(rvr_state_provider_state_result_type, "Next")
+      .def_readwrite("state", &rules::RangeValueRuleStateProvider::StateResult::Next::state)
+      .def_readwrite("duration_until", &rules::RangeValueRuleStateProvider::StateResult::Next::duration_until);
 }
 
 }  // namespace bindings

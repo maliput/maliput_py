@@ -17,7 +17,9 @@ from maliput.api import (
 from maliput.api.rules import (
     DirectionUsageRule,
     DiscreteValueRule,
+    DiscreteValueRuleStateProvider,
     RangeValueRule,
+    RangeValueRuleStateProvider,
     RoadRulebook,
     RightOfWayRule,
     Rule,
@@ -424,3 +426,17 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertTrue('GetRule' in dut_type_methods)
         self.assertTrue('GetDiscreteValueRule' in dut_type_methods)
         self.assertTrue('GetRangeValueRule' in dut_type_methods)
+
+    def test_discretevaluerulestateprovider_methods(self):
+        """
+        Tests that DiscreteValueRuleStateProvider exposes the right methods.
+        """
+        dut_type_methods = dir(DiscreteValueRuleStateProvider)
+        self.assertTrue('GetState' in dut_type_methods)
+
+    def test_rangevaluerulestateprovider_methods(self):
+        """
+        Tests that RangeValueRuleStateProvider exposes the right methods.
+        """
+        dut_type_methods = dir(RangeValueRuleStateProvider)
+        self.assertTrue('GetState' in dut_type_methods)
