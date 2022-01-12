@@ -11,6 +11,7 @@
 #include <maliput/api/rules/right_of_way_rule.h>
 #include <maliput/api/rules/road_rulebook.h>
 #include <maliput/api/rules/rule_registry.h>
+#include <maliput/api/rules/traffic_lights.h>
 // TODO: Should be removed as SpeedLimitRule gets deprecated.
 #include <maliput/api/rules/speed_limit_rule.h>
 #include <pybind11/operators.h>
@@ -190,6 +191,24 @@ void InitializeRulesNamespace(py::module* m) {
   py::class_<rules::RangeValueRuleStateProvider::StateResult::Next>(rvr_state_provider_state_result_type, "Next")
       .def_readwrite("state", &rules::RangeValueRuleStateProvider::StateResult::Next::state)
       .def_readwrite("duration_until", &rules::RangeValueRuleStateProvider::StateResult::Next::duration_until);
+
+  py::enum_<rules::BulbColor>(*m, "BulbColor")
+      .value("kRed", rules::BulbColor::kRed)
+      .value("kYellow", rules::BulbColor::kYellow)
+      .value("kGreen", rules::BulbColor::kGreen);
+
+  py::enum_<rules::BulbState>(*m, "BulbState")
+      .value("kOff", rules::BulbState::kOff)
+      .value("kOn", rules::BulbState::kOn)
+      .value("kBlinking", rules::BulbState::kBlinking);
+
+  py::enum_<rules::BulbType>(*m, "BulbType")
+      .value("kRound", rules::BulbType::kRound)
+      .value("kArrow", rules::BulbType::kArrow);
+
+  m->def("BulbColorMapper", &rules::BulbColorMapper);
+  m->def("BulbStateMapper", &rules::BulbStateMapper);
+  m->def("BulbTypeMapper", &rules::BulbTypeMapper);
 }
 
 }  // namespace bindings

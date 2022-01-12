@@ -15,6 +15,12 @@ from maliput.api import (
     UniqueId,
 )
 from maliput.api.rules import (
+    BulbColor,
+    BulbColorMapper,
+    BulbState,
+    BulbStateMapper,
+    BulbType,
+    BulbTypeMapper,
     DirectionUsageRule,
     DiscreteValueRule,
     DiscreteValueRuleStateProvider,
@@ -440,3 +446,54 @@ class TestMaliputApiRules(unittest.TestCase):
         """
         dut_type_methods = dir(RangeValueRuleStateProvider)
         self.assertTrue('GetState' in dut_type_methods)
+
+    def test_bulbcolor_values(self):
+        """
+        Tests that BulbColor values.
+        """
+        self.assertNotEqual(BulbColor.kRed, BulbColor.kYellow)
+        self.assertNotEqual(BulbColor.kRed, BulbColor.kGreen)
+        self.assertNotEqual(BulbColor.kYellow, BulbColor.kGreen)
+
+    def test_bulbcolormapper(self):
+        """
+        Tests that BulbColorMapper returns a dictionary of BulbColors to their string
+        representation.
+        """
+        bulb_colors_dict = BulbColorMapper()
+        self.assertEqual("Red", bulb_colors_dict[BulbColor.kRed])
+        self.assertEqual("Yellow", bulb_colors_dict[BulbColor.kYellow])
+        self.assertEqual("Green", bulb_colors_dict[BulbColor.kGreen])
+
+    def test_bulbstate_values(self):
+        """
+        Tests that BulbStates values.
+        """
+        self.assertNotEqual(BulbState.kOff, BulbState.kOn)
+        self.assertNotEqual(BulbState.kOff, BulbState.kBlinking)
+        self.assertNotEqual(BulbState.kOn, BulbState.kBlinking)
+
+    def test_bulbstatemapper(self):
+        """
+        Tests that BulbStateMapper returns a dictionary of BulbStates to their string
+        representation.
+        """
+        bulb_states_dict = BulbStateMapper()
+        self.assertEqual("Off", bulb_states_dict[BulbState.kOff])
+        self.assertEqual("On", bulb_states_dict[BulbState.kOn])
+        self.assertEqual("Blinking", bulb_states_dict[BulbState.kBlinking])
+
+    def test_bulbype_values(self):
+        """
+        Tests BulbType values.
+        """
+        self.assertNotEqual(BulbType.kRound, BulbType.kArrow)
+
+    def test_bulbtypemapper(self):
+        """
+        Tests that BulbTypeMapper returns a dictionary of BulbType to their string
+        representation.
+        """
+        bulb_types_dict = BulbTypeMapper()
+        self.assertEqual("Round", bulb_types_dict[BulbType.kRound])
+        self.assertEqual("Arrow", bulb_types_dict[BulbType.kArrow])
