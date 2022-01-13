@@ -8,13 +8,19 @@
 import unittest
 
 from maliput.api import (
+    InertialPosition,
     LaneId,
     LaneSRange,
     LaneSRoute,
+    Rotation,
     SRange,
     UniqueId,
 )
+from maliput.math import (
+    Vector3,
+)
 from maliput.api.rules import (
+    Bulb,
     BulbColor,
     BulbColorMapper,
     BulbState,
@@ -497,3 +503,55 @@ class TestMaliputApiRules(unittest.TestCase):
         bulb_types_dict = BulbTypeMapper()
         self.assertEqual("Round", bulb_types_dict[BulbType.kRound])
         self.assertEqual("Arrow", bulb_types_dict[BulbType.kArrow])
+
+    def test_bulb_boundingbox(self):
+        """
+        Tests that Bulb::BoundingBox.
+        """
+        dut = Bulb.BoundingBox()
+        self.assertEqual(Vector3(-0.0889, -0.1778, -0.1778), dut.p_BMin)
+        self.assertEqual(Vector3(0.0889, 0.1778, 0.1778), dut.p_BMax)
+
+        dut.p_BMin = Vector3(1., 2., 3.)
+        self.assertEqual(Vector3(1., 2., 3.), dut.p_BMin)
+
+        dut.p_BMax = Vector3(4., 5., 6.)
+        self.assertEqual(Vector3(4., 5., 6.), dut.p_BMax)
+
+    def test_bulb_id(self):
+        """
+        Test the Bulb::Id binding.
+        """
+        dut = Bulb.Id("dut")
+        self.assertEqual("dut", dut.string())
+        self.assertEqual(Bulb.Id("dut"), dut)
+
+    def test_bulb(self):
+        """
+        Test the Bulb constructor and accessors bindings.
+        """
+        bulb_id = Bulb.Id("dut")
+        position = InertialPosition(1., 2., 3.)
+        rotation = Rotation()
+        bulb_color = BulbColor.kYellow
+        bulb_type = BulbType.kArrow
+        arrow_orientation_rad = 0.1
+        bulb_states = [BulbState.kOn, BulbState.kOff]
+        bounding_box = Bulb.BoundingBox()
+        bounding_box.p_BMin = Vector3(1., 2., 3.)
+        bounding_box.p_BMax = Vector3(4., 5., 6.)
+
+        dut = Bulb(bulb_id, position, rotation, bulb_color, bulb_type, arrow_orientation_rad,
+                   bulb_states, bounding_box)
+
+        self.assertEqual(bulb_id, dut.id())
+        self.assertEqual(position.xyz(), dut.position_bulb_group().xyz())
+        self.assertEqual(rotation.quat().coeffs(), dut.orientation_bulb_group().quat().coeffs())
+        self.assertEqual(bulb_color, dut.color())
+        self.assertEqual(bulb_id, dut.id())
+        self.assertEqual(bulb_type, dut.type())
+        self.assertEqual(bulb_states, dut.states())
+        self.assertEqual(bounding_box.p_BMin, dut.bounding_box().p_BMin)
+        self.assertEqual(bounding_box.p_BMax, dut.bounding_box().p_BMax)
+        self.assertTrue(dut.IsValidState(BulbState.kOn))
+        self.assertFalse(dut.IsValidState(BulbState.kBlinking))
