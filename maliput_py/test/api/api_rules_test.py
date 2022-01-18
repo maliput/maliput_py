@@ -21,6 +21,7 @@ from maliput.math import (
 )
 from maliput.api.rules import (
     Bulb,
+    BulbGroup,
     BulbColor,
     BulbColorMapper,
     BulbState,
@@ -555,3 +556,40 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(bounding_box.p_BMax, dut.bounding_box().p_BMax)
         self.assertTrue(dut.IsValidState(BulbState.kOn))
         self.assertFalse(dut.IsValidState(BulbState.kBlinking))
+        # Not added to any BulbGroup.
+        self.assertEqual(None, dut.bulb_group())
+
+    def test_bulb_group_id(self):
+        """
+        Test the BulbGroup::Id binding.
+        """
+        dut = BulbGroup.Id("dut")
+        self.assertEqual("dut", dut.string())
+        self.assertEqual(BulbGroup.Id("dut"), dut)
+
+    def test_bulb_group(self):
+        """
+        Test the BulbGroup constructor and accessors bindings.
+        """
+        bulb_1 = Bulb(Bulb.Id("bulb_1"), InertialPosition(-0.1, -0.2, -0.3), Rotation(),
+                      BulbColor.kRed, BulbType.kRound, None, [BulbState.kBlinking],
+                      Bulb.BoundingBox())
+        bulb_2 = Bulb(Bulb.Id("bulb_2"), InertialPosition(-0.1, -0.2, -0.3), Rotation(),
+                      BulbColor.kGreen, BulbType.kArrow, -0.1, [BulbState.kBlinking],
+                      Bulb.BoundingBox())
+
+        dut_id = BulbGroup.Id("dut_id")
+        dut_position = InertialPosition(1., 2., 3.)
+        dut_rotation = Rotation()
+
+        dut = BulbGroup(dut_id, dut_position, dut_rotation, [bulb_1, bulb_2])
+
+        self.assertEqual(dut_id, dut.id())
+        self.assertEqual(dut_position.xyz(), dut.position_traffic_light().xyz())
+        self.assertEqual(dut_rotation.quat().coeffs(),
+                         dut.orientation_traffic_light().quat().coeffs())
+        self.assertEqual(2, len(dut.bulbs()))
+        self.assertEqual(bulb_1.id(), dut.bulbs()[0].id())
+        self.assertEqual(bulb_2.id(), dut.bulbs()[1].id())
+        self.assertEqual(bulb_1.id(), dut.GetBulb(bulb_1.id()).id())
+        self.assertEqual(None, dut.GetBulb(Bulb.Id("none")))
