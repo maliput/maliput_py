@@ -220,26 +220,25 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("p_BMin", &rules::Bulb::BoundingBox::p_BMin)
       .def_readwrite("p_BMax", &rules::Bulb::BoundingBox::p_BMax);
 
-  bulb_type =
-      bulb_type
-          .def(py::init<const rules::Bulb::Id&, const maliput::api::InertialPosition&, const maliput::api::Rotation&,
-                        const rules::BulbColor&, const rules::BulbType&, const std::optional<double>&,
-                        const std::optional<std::vector<rules::BulbState>>&, rules::Bulb::BoundingBox>(),
-               py::arg("id"), py::arg("position_bulb_group"), py::arg("orientation_bulb_group"), py::arg("color"),
-               py::arg("type"), py::arg("arrow_orientation_rad") = std::nullopt, py::arg("states") = std::nullopt,
-               py::arg("bounding_box") = rules::Bulb::BoundingBox())
-          .def("id", &rules::Bulb::id, py::return_value_policy::reference)
-          // .def("unique_id", &rules::Bulb::unique_id()) TODO(#21): requires UniqueBulbId
-          .def("position_bulb_group", &rules::Bulb::position_bulb_group, py::return_value_policy::reference)
-          .def("orientation_bulb_group", &rules::Bulb::orientation_bulb_group, py::return_value_policy::reference)
-          .def("color", &rules::Bulb::color, py::return_value_policy::reference)
-          .def("type", &rules::Bulb::type, py::return_value_policy::reference)
-          .def("arrow_orientation_rad", &rules::Bulb::arrow_orientation_rad)
-          .def("states", &rules::Bulb::states, py::return_value_policy::reference)
-          .def("GetDefaultState", &rules::Bulb::GetDefaultState)
-          .def("IsValidState", &rules::Bulb::IsValidState, py::return_value_policy::reference)
-          .def("bounding_box", &rules::Bulb::bounding_box, py::return_value_policy::reference)
-          .def("bulb_group", &rules::Bulb::bulb_group, py::return_value_policy::reference_internal);
+  bulb_type
+      .def(py::init<const rules::Bulb::Id&, const maliput::api::InertialPosition&, const maliput::api::Rotation&,
+                    const rules::BulbColor&, const rules::BulbType&, const std::optional<double>&,
+                    const std::optional<std::vector<rules::BulbState>>&, rules::Bulb::BoundingBox>(),
+           py::arg("id"), py::arg("position_bulb_group"), py::arg("orientation_bulb_group"), py::arg("color"),
+           py::arg("type"), py::arg("arrow_orientation_rad") = std::nullopt, py::arg("states") = std::nullopt,
+           py::arg("bounding_box") = rules::Bulb::BoundingBox())
+      .def("id", &rules::Bulb::id, py::return_value_policy::reference)
+      // .def("unique_id", &rules::Bulb::unique_id()) TODO(#21): requires UniqueBulbId
+      .def("position_bulb_group", &rules::Bulb::position_bulb_group, py::return_value_policy::reference)
+      .def("orientation_bulb_group", &rules::Bulb::orientation_bulb_group, py::return_value_policy::reference)
+      .def("color", &rules::Bulb::color, py::return_value_policy::reference)
+      .def("type", &rules::Bulb::type, py::return_value_policy::reference)
+      .def("arrow_orientation_rad", &rules::Bulb::arrow_orientation_rad)
+      .def("states", &rules::Bulb::states, py::return_value_policy::reference)
+      .def("GetDefaultState", &rules::Bulb::GetDefaultState)
+      .def("IsValidState", &rules::Bulb::IsValidState, py::return_value_policy::reference)
+      .def("bounding_box", &rules::Bulb::bounding_box, py::return_value_policy::reference)
+      .def("bulb_group", &rules::Bulb::bulb_group, py::return_value_policy::reference_internal);
 
   py::class_<rules::Bulb::Id>(bulb_type, "Id")
       .def(py::init<std::string>())
