@@ -39,6 +39,8 @@ from maliput.api.rules import (
     RuleRegistry,
     SpeedLimitRule,
     TrafficLight,
+    UniqueBulbId,
+    UniqueBulbGroupId,
 )
 
 
@@ -631,3 +633,68 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(bulb_group.id(), dut.bulb_groups()[0].id())
         self.assertEqual(bulb_group.id(), dut.GetBulbGroup(bulb_group.id()).id())
         self.assertEqual(None, dut.GetBulbGroup(BulbGroup.Id("none")))
+
+    def test_delimiter_unique_bulb_id(self):
+        """
+        Test the UniqueBulbId::delimiter() binding.
+        """
+        self.assertEqual("-", UniqueBulbId.delimiter())
+
+    def test_default_constructor_unique_bulb_id(self):
+        """
+        Test the UniqueBulbId default constructor bindings.
+        """
+        compound_id = "default{}default{}default".format(UniqueBulbId.delimiter(),
+                                                         UniqueBulbId.delimiter())
+        dut = UniqueBulbId()
+        self.assertEqual(compound_id, dut.string())
+        self.assertEqual(UniqueBulbId(), dut)
+        self.assertEqual(TrafficLight.Id("default"), dut.traffic_light_id())
+        self.assertEqual(BulbGroup.Id("default"), dut.bulb_group_id())
+        self.assertEqual(Bulb.Id("default"), dut.bulb_id())
+
+    def test_fully_parameterized_constructor_unique_bulb_id(self):
+        """
+        Test the UniqueBulbId fully parametrized constructor bindings.
+        """
+        traffic_light_id = TrafficLight.Id("traffic_light")
+        bulb_group_id = BulbGroup.Id("bulb_group")
+        bulb_id = Bulb.Id("bulb")
+        compound_id = "traffic_light{}bulb_group{}bulb".format(UniqueBulbId.delimiter(),
+                                                               UniqueBulbId.delimiter())
+        dut = UniqueBulbId(traffic_light_id, bulb_group_id, bulb_id)
+        self.assertEqual(compound_id, dut.string())
+        self.assertEqual(UniqueBulbId(traffic_light_id, bulb_group_id, bulb_id), dut)
+        self.assertEqual(traffic_light_id, dut.traffic_light_id())
+        self.assertEqual(bulb_group_id, dut.bulb_group_id())
+        self.assertEqual(bulb_id, dut.bulb_id())
+
+    def test_delimiter_unique_bulb_group_id(self):
+        """
+        Test the UniqueBulbGroupId::delimiter() binding.
+        """
+        self.assertEqual("-", UniqueBulbGroupId.delimiter())
+
+    def test_default_constructor_unique_bulb_group_id(self):
+        """
+        Test the UniqueBulbGroupId default constructor bindings.
+        """
+        compound_id = "default{}default".format(UniqueBulbGroupId.delimiter())
+        dut = UniqueBulbGroupId()
+        self.assertEqual(compound_id, dut.string())
+        self.assertEqual(UniqueBulbGroupId(), dut)
+        self.assertEqual(TrafficLight.Id("default"), dut.traffic_light_id())
+        self.assertEqual(BulbGroup.Id("default"), dut.bulb_group_id())
+
+    def test_fully_parameterized_constructor_unique_bulb_group_id(self):
+        """
+        Test the UniqueBulbGroupId fully parametrized constructor bindings.
+        """
+        traffic_light_id = TrafficLight.Id("traffic_light")
+        bulb_group_id = BulbGroup.Id("bulb_group")
+        compound_id = "traffic_light{}bulb_group".format(UniqueBulbGroupId.delimiter())
+        dut = UniqueBulbGroupId(traffic_light_id, bulb_group_id)
+        self.assertEqual(compound_id, dut.string())
+        self.assertEqual(UniqueBulbGroupId(traffic_light_id, bulb_group_id), dut)
+        self.assertEqual(traffic_light_id, dut.traffic_light_id())
+        self.assertEqual(bulb_group_id, dut.bulb_group_id())

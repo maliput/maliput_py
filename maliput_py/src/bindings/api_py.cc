@@ -7,6 +7,7 @@
 #include <maliput/api/road_network.h>
 #include <maliput/api/segment.h>
 #include <maliput/api/unique_id.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -24,7 +25,10 @@ PYBIND11_MODULE(api, m) {
   // TODO(m-chaturvedi) Add doc when typedefs are parsed (#9599)
   py::class_<api::RoadGeometryId>(m, "RoadGeometryId")
       .def(py::init<std::string>())
-      .def("string", &api::RoadGeometryId::string, py::return_value_policy::reference_internal);
+      .def(py::detail::hash(py::self))
+      .def("string", &api::RoadGeometryId::string)
+      .def("__repr__", &api::RoadGeometryId::string)
+      .def("__eq__", &api::RoadGeometryId::operator==);
 
   py::class_<api::InertialPosition>(m, "InertialPosition")
       .def(py::init<double, double, double>(), py::arg("x"), py::arg("y"), py::arg("z"))
@@ -129,8 +133,9 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::JunctionId>(m, "JunctionId")
       .def(py::init<std::string>())
+      .def(py::detail::hash(py::self))
+      .def("string", &api::JunctionId::string)
       .def("__eq__", &api::JunctionId::operator==)
-      .def("string", &api::JunctionId::string, py::return_value_policy::reference_internal)
       .def("__repr__", [](const api::JunctionId& id) { return id.string(); });
 
   py::class_<api::Junction>(m, "Junction")
@@ -141,8 +146,9 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::SegmentId>(m, "SegmentId")
       .def(py::init<std::string>())
+      .def(py::detail::hash(py::self))
+      .def("string", &api::SegmentId::string)
       .def("__eq__", &api::SegmentId::operator==)
-      .def("string", &api::SegmentId::string, py::return_value_policy::reference_internal)
       .def("__repr__", [](const api::SegmentId& id) { return id.string(); });
 
   py::class_<api::Segment>(m, "Segment")
@@ -153,8 +159,9 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::LaneId>(m, "LaneId")
       .def(py::init<std::string>())
+      .def(py::detail::hash(py::self))
+      .def("string", &api::LaneId::string)
       .def("__eq__", &api::LaneId::operator==)
-      .def("string", &api::LaneId::string, py::return_value_policy::reference_internal)
       .def("__repr__", [](const api::LaneId& id) { return id.string(); });
 
   py::class_<api::Lane>(m, "Lane")
@@ -224,8 +231,9 @@ PYBIND11_MODULE(api, m) {
 
   py::class_<api::BranchPointId>(m, "BranchPointId")
       .def(py::init<std::string>())
+      .def(py::detail::hash(py::self))
+      .def("string", &api::BranchPointId::string)
       .def("__eq__", &api::BranchPointId::operator==)
-      .def("string", &api::BranchPointId::string, py::return_value_policy::reference_internal)
       .def("__repr__", [](const api::BranchPointId& id) { return id.string(); });
 
   py::class_<api::BranchPoint>(m, "BranchPoint")
@@ -240,7 +248,8 @@ PYBIND11_MODULE(api, m) {
       .def("GetBSide", &api::BranchPoint::GetBSide, py::return_value_policy::reference_internal);
 
   py::class_<api::UniqueId>(m, "UniqueId")
-      .def(py::init<const std::string&>(), py::arg("string"))
+      .def(py::init<const std::string&>())
+      .def(py::detail::hash(py::self))
       .def("string", &api::UniqueId::string)
       .def("__repr__", &api::UniqueId::string)
       .def("__eq__", &api::UniqueId::operator==)

@@ -228,7 +228,7 @@ void InitializeRulesNamespace(py::module* m) {
            py::arg("type"), py::arg("arrow_orientation_rad") = std::nullopt, py::arg("states") = std::nullopt,
            py::arg("bounding_box") = rules::Bulb::BoundingBox())
       .def("id", &rules::Bulb::id, py::return_value_policy::reference)
-      // .def("unique_id", &rules::Bulb::unique_id()) TODO(#21): requires UniqueBulbId
+      .def("unique_id", &rules::Bulb::unique_id)
       .def("position_bulb_group", &rules::Bulb::position_bulb_group, py::return_value_policy::reference)
       .def("orientation_bulb_group", &rules::Bulb::orientation_bulb_group, py::return_value_policy::reference)
       .def("color", &rules::Bulb::color, py::return_value_policy::reference)
@@ -253,7 +253,7 @@ void InitializeRulesNamespace(py::module* m) {
                         const maliput::api::Rotation&, std::vector<std::unique_ptr<rules::Bulb>>>(),
                py::arg("id"), py::arg("position_traffic_light"), py::arg("orientation_traffic_light"), py::arg("bulbs"))
           .def("id", &rules::BulbGroup::id, py::return_value_policy::reference)
-          // .def("unique_id", &rules::BulbGroup::unique_id)  // TODO(#21): requires UniqueBulbGroupId
+          .def("unique_id", &rules::BulbGroup::unique_id)
           .def("position_traffic_light", &rules::BulbGroup::position_traffic_light, py::return_value_policy::reference)
           .def("orientation_traffic_light", &rules::BulbGroup::orientation_traffic_light,
                py::return_value_policy::reference)
@@ -292,6 +292,31 @@ void InitializeRulesNamespace(py::module* m) {
       .def("string", &rules::TrafficLight::Id::string, py::return_value_policy::reference_internal)
       .def(py::detail::hash(py::self))
       .def("__repr__", [](const rules::TrafficLight::Id& id) { return id.string(); });
+
+  py::class_<rules::UniqueBulbId, maliput::api::UniqueId>(*m, "UniqueBulbId")
+      .def(py::init<>())
+      .def(py::init<const rules::TrafficLight::Id&, const rules::BulbGroup::Id&, const rules::Bulb::Id&>(),
+           py::arg("traffic_light_id"), py::arg("bulb_group_id"), py::arg("bulb_id"))
+      .def("__eq__", &rules::UniqueBulbId::operator==)
+      .def("string", &rules::UniqueBulbId::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::UniqueBulbId& id) { return id.string(); })
+      .def("traffic_light_id", &rules::UniqueBulbId::traffic_light_id)
+      .def("bulb_group_id", &rules::UniqueBulbId::bulb_group_id)
+      .def("bulb_id", &rules::UniqueBulbId::bulb_id)
+      .def_static("delimiter", []() { return rules::UniqueBulbId::delimiter(); });
+
+  py::class_<rules::UniqueBulbGroupId, maliput::api::UniqueId>(*m, "UniqueBulbGroupId")
+      .def(py::init<>())
+      .def(py::init<const rules::TrafficLight::Id&, const rules::BulbGroup::Id&>(), py::arg("traffic_light_id"),
+           py::arg("bulb_group_id"))
+      .def("__eq__", &rules::UniqueBulbGroupId::operator==)
+      .def("string", &rules::UniqueBulbGroupId::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::UniqueBulbGroupId& id) { return id.string(); })
+      .def("traffic_light_id", &rules::UniqueBulbGroupId::traffic_light_id)
+      .def("bulb_group_id", &rules::UniqueBulbGroupId::bulb_group_id)
+      .def_static("delimiter", []() { return rules::UniqueBulbGroupId::delimiter(); });
 }
 
 }  // namespace bindings
