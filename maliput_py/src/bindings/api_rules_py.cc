@@ -269,6 +269,29 @@ void InitializeRulesNamespace(py::module* m) {
       .def("string", &rules::BulbGroup::Id::string, py::return_value_policy::reference_internal)
       .def(py::detail::hash(py::self))
       .def("__repr__", [](const rules::BulbGroup::Id& id) { return id.string(); });
+
+  auto traffic_light_type =
+      py::class_<rules::TrafficLight>(*m, "TrafficLight")
+          .def(py::init<const rules::TrafficLight::Id&, const maliput::api::InertialPosition&,
+                        const maliput::api::Rotation&, std::vector<std::unique_ptr<rules::BulbGroup>>>(),
+               py::arg("id"), py::arg("position_road_network"), py::arg("orientation_road_network"),
+               py::arg("bulb_groups"))
+          .def("id", &rules::TrafficLight::id, py::return_value_policy::reference)
+          .def("position_road_network", &rules::TrafficLight::position_road_network, py::return_value_policy::reference)
+          .def("orientation_road_network", &rules::TrafficLight::orientation_road_network,
+               py::return_value_policy::reference)
+          // TODO: the following binding might lead to leaks as it is explained in
+          // https://github.com/pybind/pybind11/issues/637. We should look into the proposed solution.
+          .def("bulb_groups", &rules::TrafficLight::bulb_groups, py::return_value_policy::reference)
+          .def("GetBulbGroup", &rules::TrafficLight::GetBulbGroup, py::arg("id"),
+               py::return_value_policy::reference_internal);
+
+  py::class_<rules::TrafficLight::Id>(traffic_light_type, "Id")
+      .def(py::init<std::string>())
+      .def("__eq__", &rules::TrafficLight::Id::operator==)
+      .def("string", &rules::TrafficLight::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::TrafficLight::Id& id) { return id.string(); });
 }
 
 }  // namespace bindings
