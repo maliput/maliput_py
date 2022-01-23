@@ -31,6 +31,7 @@ from maliput.api.rules import (
     DirectionUsageRule,
     DiscreteValueRule,
     DiscreteValueRuleStateProvider,
+    Phase,
     RangeValueRule,
     RangeValueRuleStateProvider,
     RoadRulebook,
@@ -698,3 +699,38 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(UniqueBulbGroupId(traffic_light_id, bulb_group_id), dut)
         self.assertEqual(traffic_light_id, dut.traffic_light_id())
         self.assertEqual(bulb_group_id, dut.bulb_group_id())
+
+    def test_phase_id(self):
+        """
+        Test the Phase::Id binding.
+        """
+        dut = Phase.Id("dut")
+        self.assertEqual("dut", dut.string())
+        self.assertEqual(Phase.Id("dut"), dut)
+
+    def test_phase(self):
+        """
+        Test the Phase bindings.
+        """
+        dut_id = Phase.Id("dut_id")
+        rule_states = {
+            RightOfWayRule.Id("row_1"): RightOfWayRule.State.Id("rowrs_1"),
+            RightOfWayRule.Id("row_2"): RightOfWayRule.State.Id("rowrs_2"),
+        }
+        discrete_value_rule_states = {
+            Rule.Id("dvr_3"):
+                DiscreteValueRule.DiscreteValue(Rule.State.kBestEffort,
+                                                {"type_I": [Rule.Id("id_a"), Rule.Id("id_b")]},
+                                                {"Bulb": [UniqueId("uid_a")]},
+                                                "a value"),
+        }
+        bulb_states = {UniqueBulbId(TrafficLight.Id("tl_1"),
+                                    BulbGroup.Id("bg_1"),
+                                    Bulb.Id("1")):
+                       BulbState.kBlinking}
+        dut = Phase(dut_id, rule_states, discrete_value_rule_states, bulb_states)
+
+        self.assertEqual(dut_id, dut.id())
+        self.assertEqual(rule_states, dut.rule_states())
+        self.assertEqual(discrete_value_rule_states, dut.discrete_value_rule_states())
+        self.assertEqual(bulb_states, dut.bulb_states())
