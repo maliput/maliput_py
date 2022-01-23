@@ -105,7 +105,34 @@ PYBIND11_MODULE(api, m) {
       .def_readwrite("eta_v", &api::IsoLaneVelocity::eta_v);
 
   py::class_<api::RoadNetwork>(m, "RoadNetwork")
-      .def("road_geometry", &api::RoadNetwork::road_geometry, py::return_value_policy::reference_internal);
+      .def(
+          py::init<std::unique_ptr<const api::RoadGeometry>, std::unique_ptr<const api::rules::RoadRulebook>,
+                   std::unique_ptr<const api::rules::TrafficLightBook>, std::unique_ptr<api::IntersectionBook>,
+                   std::unique_ptr<api::rules::PhaseRingBook>, std::unique_ptr<api::rules::RightOfWayRuleStateProvider>,
+                   std::unique_ptr<api::rules::PhaseProvider>, std::unique_ptr<api::rules::RuleRegistry>,
+                   std::unique_ptr<api::rules::DiscreteValueRuleStateProvider>,
+                   std::unique_ptr<api::rules::RangeValueRuleStateProvider>>(),
+          py::arg("road_geometry"), py::arg("rulebook"), py::arg("traffic_light_book"), py::arg("intersection_book"),
+          py::arg("phase_ring_book"), py::arg("right_of_way_rule_state_provider"), py::arg("phase_provider"),
+          py::arg("rule_registry"), py::arg("discrete_value_rule_state_provider"),
+          py::arg("range_value_rule_state_provider"))
+      .def("road_geometry", &api::RoadNetwork::road_geometry, py::return_value_policy::reference_internal)
+      .def("rulebook", &api::RoadNetwork::rulebook, py::return_value_policy::reference_internal)
+      .def("traffic_light_book", &api::RoadNetwork::traffic_light_book, py::return_value_policy::reference_internal)
+      .def("intersection_book", &api::RoadNetwork::intersection_book, py::return_value_policy::reference_internal)
+      .def("phase_ring_book", &api::RoadNetwork::phase_ring_book, py::return_value_policy::reference_internal)
+      .def("right_of_way_rule_state_provider", &api::RoadNetwork::right_of_way_rule_state_provider,
+           py::return_value_policy::reference_internal)
+      .def("phase_provider", &api::RoadNetwork::phase_provider, py::return_value_policy::reference_internal)
+      .def("rule_registry", &api::RoadNetwork::rule_registry, py::return_value_policy::reference_internal)
+      .def("discrete_value_rule_state_provider", &api::RoadNetwork::discrete_value_rule_state_provider,
+           py::return_value_policy::reference_internal)
+      .def("range_value_rule_state_provider", &api::RoadNetwork::range_value_rule_state_provider,
+           py::return_value_policy::reference_internal)
+      .def("Contains", py::overload_cast<const api::RoadPosition&>(&api::RoadNetwork::Contains, py::const_),
+           py::arg("road_position"))
+      .def("Contains", py::overload_cast<const api::LaneId&>(&api::RoadNetwork::Contains, py::const_),
+           py::arg("lane_id"));
 
   py::class_<api::RoadGeometry>(m, "RoadGeometry")
       .def("id", &api::RoadGeometry::id)
