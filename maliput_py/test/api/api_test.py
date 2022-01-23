@@ -9,12 +9,16 @@ import math
 import unittest
 
 from maliput.api import (
+    BranchPoint,
+    BranchPointId,
     HBounds,
     InertialPosition,
     Intersection,
     IntersectionBook,
     IsoLaneVelocity,
+    Junction,
     JunctionId,
+    Lane,
     LaneEnd,
     LaneId,
     LanePosition,
@@ -22,11 +26,13 @@ from maliput.api import (
     LaneSRange,
     LaneSRoute,
     RBounds,
+    RoadGeometry,
     RoadGeometryId,
     RoadNetwork,
     RoadPosition,
     RoadPositionResult,
     Rotation,
+    Segment,
     SegmentId,
     SRange,
     UniqueId,
@@ -223,6 +229,15 @@ class TestMaliputApi(unittest.TestCase):
         dut.eta_v = 2.6
         self.assertAlmostEqual(2.6, dut.eta_v)
 
+    def test_branchpoint_id(self):
+        """
+        Tests the BranchPointId binding.
+        """
+        dut = BranchPointId("dut")
+        self.assertEqual("dut", dut.string())
+        self.assertEqual("dut", dut.__repr__())
+        self.assertEqual(BranchPointId("dut"), dut)
+
     def test_lane_id(self):
         """
         Tests the LaneId binding.
@@ -394,3 +409,72 @@ class TestMaliputApi(unittest.TestCase):
         self.assertTrue('discrete_value_rule_state_provider' in dut_type_methods)
         self.assertTrue('range_value_rule_state_provider' in dut_type_methods)
         self.assertTrue('Contains' in dut_type_methods)
+
+    def test_lane_methods(self):
+        """
+        Tests that Lane exposes the right methods.
+        """
+        dut_type_methods = dir(Lane)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('segment' in dut_type_methods)
+        self.assertTrue('index' in dut_type_methods)
+        self.assertTrue('to_left' in dut_type_methods)
+        self.assertTrue('to_right' in dut_type_methods)
+        self.assertTrue('length' in dut_type_methods)
+        self.assertTrue('lane_bounds' in dut_type_methods)
+        self.assertTrue('segment_bounds' in dut_type_methods)
+        self.assertTrue('elevation_bounds' in dut_type_methods)
+        self.assertTrue('ToInertialPosition' in dut_type_methods)
+        self.assertTrue('ToLanePosition' in dut_type_methods)
+        self.assertTrue('EvalMotionDerivatives' in dut_type_methods)
+        self.assertTrue('GetBranchPoint' in dut_type_methods)
+        self.assertTrue('GetConfluentBranches' in dut_type_methods)
+        self.assertTrue('GetOngoingBranches' in dut_type_methods)
+        self.assertTrue('GetDefaultBranch' in dut_type_methods)
+        self.assertTrue('Contains' in dut_type_methods)
+
+    def test_segment_methods(self):
+        """
+        Tests that Segment exposes the right methods.
+        """
+        dut_type_methods = dir(Segment)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('num_lanes' in dut_type_methods)
+        self.assertTrue('junction' in dut_type_methods)
+        self.assertTrue('lane' in dut_type_methods)
+
+    def test_junction_methods(self):
+        """
+        Tests that Junction exposes the right methods.
+        """
+        dut_type_methods = dir(Junction)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('num_segments' in dut_type_methods)
+        self.assertTrue('segment' in dut_type_methods)
+        self.assertTrue('road_geometry' in dut_type_methods)
+
+    def test_brachpoint_methods(self):
+        """
+        Tests that BranchPoint exposes the right methods.
+        """
+        dut_type_methods = dir(BranchPoint)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('road_geometry' in dut_type_methods)
+        self.assertTrue('GetConfluentBranches' in dut_type_methods)
+        self.assertTrue('GetOngoingBranches' in dut_type_methods)
+        self.assertTrue('GetDefaultBranch' in dut_type_methods)
+        self.assertTrue('GetASide' in dut_type_methods)
+        self.assertTrue('GetBSide' in dut_type_methods)
+
+    def test_road_geometry_methods(self):
+        """
+        Tests that RoadGeometry exposes the right methods.
+        """
+        dut_type_methods = dir(RoadGeometry)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('num_junctions' in dut_type_methods)
+        self.assertTrue('junction' in dut_type_methods)
+        self.assertTrue('ById' in dut_type_methods)
+        self.assertTrue('ToRoadPosition' in dut_type_methods)
+        self.assertTrue('ToRoadPositionByHint' in dut_type_methods)
+        self.assertTrue('FindRoadPositions' in dut_type_methods)
