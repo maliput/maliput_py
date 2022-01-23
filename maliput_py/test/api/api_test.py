@@ -11,6 +11,7 @@ import unittest
 from maliput.api import (
     HBounds,
     InertialPosition,
+    Intersection,
     IsoLaneVelocity,
     JunctionId,
     LaneEnd,
@@ -341,3 +342,26 @@ class TestMaliputApi(unittest.TestCase):
         self.assertEqual("dut", dut.string())
         self.assertEqual(UniqueId("dut"), dut)
         self.assertNotEqual(dut, UniqueId("another dut"))
+
+    def test_intersection_methods(self):
+        """
+        Tests that Intersection exposes the right methods.
+        """
+        dut_type_methods = dir(Intersection)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('Phase' in dut_type_methods)
+        self.assertTrue('region' in dut_type_methods)
+        self.assertTrue('ring_id' in dut_type_methods)
+        self.assertTrue('bulb_states' in dut_type_methods)
+        self.assertTrue('DiscreteValueRuleStates' in dut_type_methods)
+        self.assertTrue('RuleStates' in dut_type_methods)
+        self.assertTrue('Includes' in dut_type_methods)
+
+    def test_intersection__id(self):
+        """
+        Test the Intersection::Id binding.
+        """
+        dut = Intersection.Id("dut")
+        self.assertEqual("dut", dut.string())
+        self.assertEqual("dut", dut.__repr__())
+        self.assertEqual(Intersection.Id("dut"), dut)

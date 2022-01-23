@@ -1,4 +1,5 @@
 #include <maliput/api/branch_point.h>
+#include <maliput/api/intersection.h>
 #include <maliput/api/junction.h>
 #include <maliput/api/lane.h>
 #include <maliput/api/lane_data.h>
@@ -257,6 +258,38 @@ PYBIND11_MODULE(api, m) {
 
   auto rules_module = m.def_submodule("rules", "Maliput rules namespace");
   api::bindings::InitializeRulesNamespace(&rules_module);
+
+  auto intersection_type =
+      py::class_<api::Intersection>(m, "Intersection")
+          .def("id", &api::Intersection::id, py::return_value_policy::reference_internal)
+          .def("Phase", &api::Intersection::Phase)
+          .def("SetPhase", &api::Intersection::SetPhase, py::arg("phase_id"), py::arg("next_phase"),
+               py::arg("duration_until"))
+          .def("region", &api::Intersection::region, py::return_value_policy::reference_internal)
+          .def("ring_id", &api::Intersection::ring_id, py::return_value_policy::reference_internal)
+          .def("bulb_states", &api::Intersection::bulb_states)
+          .def("DiscreteValueRuleStates", &api::Intersection::DiscreteValueRuleStates)
+          .def("RuleStates", &api::Intersection::RuleStates)
+          .def("Includes",
+               py::overload_cast<const api::rules::TrafficLight::Id&>(&api::Intersection::Includes, py::const_),
+               py::arg("id"))
+          .def("Includes",
+               py::overload_cast<const api::rules::DiscreteValueRule::Id&>(&api::Intersection::Includes, py::const_),
+               py::arg("id"))
+          .def("Includes",
+               py::overload_cast<const api::rules::RightOfWayRule::Id&>(&api::Intersection::Includes, py::const_),
+               py::arg("id"))
+          .def("Includes",
+               py::overload_cast<const api::InertialPosition&, const api::RoadGeometry*>(&api::Intersection::Includes,
+                                                                                         py::const_),
+               py::arg("inertial_position"), py::arg("road_geometry"));
+
+  py::class_<api::Intersection::Id>(intersection_type, "Id")
+      .def(py::init<std::string>())
+      .def(py::detail::hash(py::self))
+      .def("string", &api::Intersection::Id::string)
+      .def("__eq__", &api::Intersection::Id::operator==)
+      .def("__repr__", [](const api::Intersection::Id& id) { return id.string(); });
 }
 
 }  // namespace bindings
