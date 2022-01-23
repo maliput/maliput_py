@@ -34,6 +34,7 @@ from maliput.api.rules import (
     Phase,
     PhaseProvider,
     PhaseRing,
+    PhaseRingBook,
     RangeValueRule,
     RangeValueRuleStateProvider,
     RoadRulebook,
@@ -832,3 +833,12 @@ class TestMaliputApiRules(unittest.TestCase):
         """
         dut_type_methods = dir(PhaseProvider)
         self.assertTrue('GetPhase' in dut_type_methods)
+
+    def test_phase_ring_book_methods(self):
+        """
+        Tests that PhaseRingBook exposes the right methods.
+        """
+        dut_type_methods = dir(PhaseRingBook)
+        self.assertTrue('GetPhaseRings' in dut_type_methods)
+        self.assertTrue('GetPhaseRing' in dut_type_methods)
+        self.assertTrue('FindPhaseRing' in dut_type_methods)
