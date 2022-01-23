@@ -32,6 +32,7 @@ from maliput.api.rules import (
     DiscreteValueRule,
     DiscreteValueRuleStateProvider,
     Phase,
+    PhaseProvider,
     PhaseRing,
     RangeValueRule,
     RangeValueRuleStateProvider,
@@ -824,3 +825,10 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(1, len(dut.GetNextPhases(phase_id_2)))
         self.assertEqual(phase_id_1, dut.GetNextPhases(phase_id_2)[0].id)
         self.assertEqual(2.0, dut.GetNextPhases(phase_id_2)[0].duration_until)
+
+    def test_phase_provider_methods(self):
+        """
+        Tests that PhaseProvider exposes the right methods.
+        """
+        dut_type_methods = dir(PhaseProvider)
+        self.assertTrue('GetPhase' in dut_type_methods)

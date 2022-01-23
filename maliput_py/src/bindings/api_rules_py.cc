@@ -5,6 +5,7 @@
 // TODO: Should be removed as DirectionUsageRule gets deprecated.
 #include <maliput/api/rules/direction_usage_rule.h>
 #include <maliput/api/rules/phase.h>
+#include <maliput/api/rules/phase_provider.h>
 #include <maliput/api/rules/phase_ring.h>
 #include <maliput/api/rules/range_value_rule.h>
 #include <maliput/api/rules/range_value_rule_state_provider.h>
@@ -397,6 +398,17 @@ void InitializeRulesNamespace(py::module* m) {
       .def(py::init<rules::Phase::Id, std::optional<double>>(), py::arg("id"), py::arg("duration_until"))
       .def_readwrite("id", &rules::PhaseRing::NextPhase::id)
       .def_readwrite("duration_until", &rules::PhaseRing::NextPhase::duration_until);
+
+  auto phase_provider_type = py::class_<rules::PhaseProvider>(*m, "PhaseProvider")
+                                 .def("GetPhase", &rules::PhaseProvider::GetPhase, py::arg("id"));
+
+  auto phase_provider_state_result_type = py::class_<rules::PhaseProvider::Result>(phase_provider_type, "Result")
+                                              .def_readwrite("state", &rules::PhaseProvider::Result::state)
+                                              .def_readwrite("next", &rules::PhaseProvider::Result::next);
+
+  py::class_<rules::PhaseProvider::Result::Next>(phase_provider_state_result_type, "Next")
+      .def_readwrite("state", &rules::PhaseProvider::Result::Next::state)
+      .def_readwrite("duration_until", &rules::PhaseProvider::Result::Next::duration_until);
 }
 
 }  // namespace bindings
