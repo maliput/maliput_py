@@ -32,6 +32,7 @@ from maliput.api.rules import (
     DiscreteValueRule,
     DiscreteValueRuleStateProvider,
     Phase,
+    PhaseRing,
     RangeValueRule,
     RangeValueRuleStateProvider,
     RoadRulebook,
@@ -734,3 +735,92 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(rule_states, dut.rule_states())
         self.assertEqual(discrete_value_rule_states, dut.discrete_value_rule_states())
         self.assertEqual(bulb_states, dut.bulb_states())
+
+    def test_phase_ring_id(self):
+        """
+        Test the PhaseRing::Id binding.
+        """
+        dut = PhaseRing.Id("dut")
+        self.assertEqual("dut", dut.string())
+        self.assertEqual(PhaseRing.Id("dut"), dut)
+
+    def test_phase_ring_next_phaseid(self):
+        """
+        Test the PhaseRing::NextPhase binding.
+        """
+        phase_id = Phase.Id("id")
+        duration_until = 123.456
+        dut = PhaseRing.NextPhase(phase_id, duration_until)
+        self.assertEqual(phase_id, dut.id)
+        self.assertEqual(duration_until, dut.duration_until)
+
+        dut.id = Phase.Id("another id")
+        self.assertEqual(Phase.Id("another id"), dut.id)
+
+        dut.duration_until = None
+        self.assertEqual(None, dut.duration_until)
+
+    def test_phase_ring(self):
+        """
+        Test the PhaseRing binding.
+        """
+        phase_id_1 = Phase.Id("ph_1")
+        rule_states_1 = {RightOfWayRule.Id("row_1"): RightOfWayRule.State.Id("rowrs_1")}
+        discrete_value_rule_states_1 = {
+            Rule.Id("dvr_3"):
+                DiscreteValueRule.DiscreteValue(Rule.State.kBestEffort, {"t_1": [Rule.Id("r_1")]},
+                                                {"Bulb": [UniqueId("tl_1-bg_1-b_1")]}, "kGo"),
+        }
+        bulb_states_1 = {UniqueBulbId(TrafficLight.Id("tl_1"), BulbGroup.Id("bg_1"), Bulb.Id("1")):
+                         BulbState.kBlinking}
+
+        phase_1 = Phase(phase_id_1, rule_states_1, discrete_value_rule_states_1, bulb_states_1)
+
+        phase_id_2 = Phase.Id("ph_2")
+        rule_states_2 = {RightOfWayRule.Id("row_1"): RightOfWayRule.State.Id("rowrs_2")}
+        discrete_value_rule_states_2 = {
+            Rule.Id("dvr_3"):
+                DiscreteValueRule.DiscreteValue(Rule.State.kStrict, {"t_1": [Rule.Id("r_1")]},
+                                                {"Bulb": [UniqueId("tl_1-bg_1-b_1")]}, "kStop"),
+        }
+        bulb_states_2 = {UniqueBulbId(TrafficLight.Id("tl_1"), BulbGroup.Id("bg_1"), Bulb.Id("1")):
+                         BulbState.kOff}
+        phase_2 = Phase(phase_id_2, rule_states_2, discrete_value_rule_states_2, bulb_states_2)
+
+        phases = [phase_1, phase_2]
+
+        next_phases = {phase_id_1: [PhaseRing.NextPhase(phase_id_2, 1.0)],
+                       phase_id_2: [PhaseRing.NextPhase(phase_id_1, 2.0)]}
+
+        phase_ring_id = PhaseRing.Id("dut")
+        dut = PhaseRing(phase_ring_id, phases, next_phases)
+
+        self.assertEqual(phase_ring_id, dut.id())
+        phase = dut.GetPhase(phase_id_1)
+        self.assertEqual(phase_id_1, phase.id())
+
+        phase = dut.GetPhase(phase_id_2)
+        self.assertEqual(phase_id_2, phase.id())
+
+        dict_phases = dut.phases()
+        self.assertTrue(phase_id_1 in dict_phases)
+        self.assertTrue(phase_id_2 in dict_phases)
+        self.assertEqual(phase_id_1, dict_phases[phase_id_1].id())
+        self.assertEqual(phase_id_2, dict_phases[phase_id_2].id())
+
+        dict_next_phases = dut.next_phases()
+        self.assertTrue(phase_id_1 in dict_next_phases)
+        self.assertTrue(phase_id_2 in dict_next_phases)
+        self.assertEqual(1, len(dict_next_phases[phase_id_1]))
+        self.assertEqual(phase_id_2, dict_next_phases[phase_id_1][0].id)
+        self.assertEqual(1.0, dict_next_phases[phase_id_1][0].duration_until)
+        self.assertEqual(1, len(dict_next_phases[phase_id_2]))
+        self.assertEqual(phase_id_1, dict_next_phases[phase_id_2][0].id)
+        self.assertEqual(2.0, dict_next_phases[phase_id_2][0].duration_until)
+
+        self.assertEqual(1, len(dut.GetNextPhases(phase_id_1)))
+        self.assertEqual(phase_id_2, dut.GetNextPhases(phase_id_1)[0].id)
+        self.assertEqual(1.0, dut.GetNextPhases(phase_id_1)[0].duration_until)
+        self.assertEqual(1, len(dut.GetNextPhases(phase_id_2)))
+        self.assertEqual(phase_id_1, dut.GetNextPhases(phase_id_2)[0].id)
+        self.assertEqual(2.0, dut.GetNextPhases(phase_id_2)[0].duration_until)
