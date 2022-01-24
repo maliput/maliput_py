@@ -263,8 +263,8 @@ PYBIND11_MODULE(api, m) {
       py::class_<api::Intersection>(m, "Intersection")
           .def("id", &api::Intersection::id, py::return_value_policy::reference_internal)
           .def("Phase", &api::Intersection::Phase)
-          .def("SetPhase", &api::Intersection::SetPhase, py::arg("phase_id"), py::arg("next_phase"),
-               py::arg("duration_until"))
+          .def("SetPhase", &api::Intersection::SetPhase, py::arg("phase_id"), py::arg("next_phase") = std::nullopt,
+               py::arg("duration_until") = std::nullopt)
           .def("region", &api::Intersection::region, py::return_value_policy::reference_internal)
           .def("ring_id", &api::Intersection::ring_id, py::return_value_policy::reference_internal)
           .def("bulb_states", &api::Intersection::bulb_states)
@@ -296,13 +296,16 @@ PYBIND11_MODULE(api, m) {
       .def("GetIntersection", &api::IntersectionBook::GetIntersection, py::arg("id"))
       .def("FindIntersection",
            py::overload_cast<const api::rules::TrafficLight::Id&>(&api::IntersectionBook::FindIntersection),
-           py::arg("id"))
+           py::arg("id"),
+           py::return_value_policy::reference_internal)
       .def("FindIntersection",
            py::overload_cast<const api::rules::DiscreteValueRule::Id&>(&api::IntersectionBook::FindIntersection),
-           py::arg("id"))
+           py::arg("id"),
+           py::return_value_policy::reference_internal)
       .def("FindIntersection",
            py::overload_cast<const api::rules::RightOfWayRule::Id&>(&api::IntersectionBook::FindIntersection),
-           py::arg("id"));
+           py::arg("id"),
+           py::return_value_policy::reference_internal);
 }
 
 }  // namespace bindings
