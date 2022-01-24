@@ -5,6 +5,7 @@
 // TODO: Should be removed as DirectionUsageRule gets deprecated.
 #include <maliput/api/rules/direction_usage_rule.h>
 #include <maliput/api/rules/phase.h>
+#include <maliput/api/rules/phase_ring.h>
 #include <maliput/api/rules/range_value_rule.h>
 #include <maliput/api/rules/range_value_rule_state_provider.h>
 #include <maliput/api/rules/rule.h>
@@ -372,6 +373,30 @@ void InitializeRulesNamespace(py::module* m) {
       .def("string", &rules::Phase::Id::string, py::return_value_policy::reference_internal)
       .def(py::detail::hash(py::self))
       .def("__repr__", [](const rules::Phase::Id& id) { return id.string(); });
+
+  auto phase_ring_book_type =
+      py::class_<rules::PhaseRing>(*m, "PhaseRing")
+          .def(py::init<const rules::PhaseRing::Id&, const std::vector<rules::Phase>&,
+                        const std::optional<
+                            const std::unordered_map<rules::Phase::Id, std::vector<rules::PhaseRing::NextPhase>>>&>(),
+               py::arg("id"), py::arg("phases"), py::arg("next_phases") = std::nullopt)
+          .def("id", &rules::PhaseRing::id, py::return_value_policy::reference)
+          .def("GetPhase", &rules::PhaseRing::GetPhase, py::arg("id"))
+          .def("phases", &rules::PhaseRing::phases, py::return_value_policy::reference)
+          .def("next_phases", &rules::PhaseRing::next_phases, py::return_value_policy::reference)
+          .def("GetNextPhases", &rules::PhaseRing::GetNextPhases, py::arg("id"), py::return_value_policy::reference);
+
+  py::class_<rules::PhaseRing::Id>(phase_ring_book_type, "Id")
+      .def(py::init<std::string>())
+      .def("__eq__", &rules::PhaseRing::Id::operator==)
+      .def("string", &rules::PhaseRing::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::PhaseRing::Id& id) { return id.string(); });
+
+  py::class_<rules::PhaseRing::NextPhase>(phase_ring_book_type, "NextPhase")
+      .def(py::init<rules::Phase::Id, std::optional<double>>(), py::arg("id"), py::arg("duration_until"))
+      .def_readwrite("id", &rules::PhaseRing::NextPhase::id)
+      .def_readwrite("duration_until", &rules::PhaseRing::NextPhase::duration_until);
 }
 
 }  // namespace bindings
