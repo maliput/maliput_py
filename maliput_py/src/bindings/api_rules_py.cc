@@ -4,6 +4,7 @@
 #include <maliput/api/rules/discrete_value_rule_state_provider.h>
 // TODO: Should be removed as DirectionUsageRule gets deprecated.
 #include <maliput/api/rules/direction_usage_rule.h>
+#include <maliput/api/rules/phase.h>
 #include <maliput/api/rules/range_value_rule.h>
 #include <maliput/api/rules/range_value_rule_state_provider.h>
 #include <maliput/api/rules/rule.h>
@@ -116,7 +117,16 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("rule_values", &rules::RuleRegistry::QueryResult::rule_values);
 
   // @{ TODO: Should be removed as these types get deprecated.
-  auto rowr_type = py::class_<rules::RightOfWayRule>(*m, "RightOfWayRule").def("id", &rules::RightOfWayRule::id);
+  auto rowr_type =
+      py::class_<rules::RightOfWayRule>(*m, "RightOfWayRule")
+          .def("id", &rules::RightOfWayRule::id, py::return_value_policy::reference_internal)
+          .def("zone", &rules::RightOfWayRule::zone, py::return_value_policy::reference_internal)
+          .def("zone_type", &rules::RightOfWayRule::zone_type)
+          .def("states", &rules::RightOfWayRule::states, py::return_value_policy::reference_internal)
+          .def("is_static", &rules::RightOfWayRule::is_static)
+          .def("static_state", &rules::RightOfWayRule::static_state, py::return_value_policy::reference_internal)
+          .def("related_bulb_groups", &rules::RightOfWayRule::related_bulb_groups,
+               py::return_value_policy::reference_internal);
 
   py::class_<rules::RightOfWayRule::Id>(rowr_type, "Id")
       .def(py::init<std::string>())
@@ -124,6 +134,33 @@ void InitializeRulesNamespace(py::module* m) {
       .def("string", &rules::RightOfWayRule::Id::string, py::return_value_policy::reference_internal)
       .def(py::detail::hash(py::self))
       .def("__repr__", [](const rules::RightOfWayRule::Id& id) { return id.string(); });
+
+  py::enum_<rules::RightOfWayRule::ZoneType>(rowr_type, "ZoneType")
+      .value("kStopExcluded", rules::RightOfWayRule::ZoneType::kStopExcluded)
+      .value("kStopAllowed", rules::RightOfWayRule::ZoneType::kStopAllowed)
+      .export_values();
+
+  auto rowrs_type =
+      py::class_<rules::RightOfWayRule::State>(rowr_type, "State")
+          .def(py::init<rules::RightOfWayRule::State::Id, rules::RightOfWayRule::State::Type,
+                        const rules::RightOfWayRule::State::YieldGroup&>(),
+               py::arg("id"), py::arg("type"), py::arg("yield_to"))
+          .def("id", &rules::RightOfWayRule::State::id, py::return_value_policy::reference_internal)
+          .def("type", &rules::RightOfWayRule::State::type)
+          .def("yield_to", &rules::RightOfWayRule::State::yield_to, py::return_value_policy::reference_internal);
+
+  py::class_<rules::RightOfWayRule::State::Id>(rowrs_type, "Id")
+      .def(py::init<std::string>())
+      .def("__eq__", &rules::RightOfWayRule::State::Id::operator==)
+      .def("string", &rules::RightOfWayRule::State::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::RightOfWayRule::State::Id& id) { return id.string(); });
+
+  py::enum_<rules::RightOfWayRule::State::Type>(rowrs_type, "Type")
+      .value("kGo", rules::RightOfWayRule::State::Type::kGo)
+      .value("kStop", rules::RightOfWayRule::State::Type::kStop)
+      .value("kStopThenGo", rules::RightOfWayRule::State::Type::kStopThenGo)
+      .export_values();
 
   auto dur_type =
       py::class_<rules::DirectionUsageRule>(*m, "DirectionUsageRule").def("id", &rules::DirectionUsageRule::id);
@@ -317,6 +354,24 @@ void InitializeRulesNamespace(py::module* m) {
       .def("traffic_light_id", &rules::UniqueBulbGroupId::traffic_light_id)
       .def("bulb_group_id", &rules::UniqueBulbGroupId::bulb_group_id)
       .def_static("delimiter", []() { return rules::UniqueBulbGroupId::delimiter(); });
+
+  auto phase_type = py::class_<rules::Phase>(*m, "Phase")
+                        .def(py::init<const rules::Phase::Id&, const rules::RuleStates&,
+                                      const rules::DiscreteValueRuleStates&, std::optional<rules::BulbStates>>(),
+                             py::arg("id"), py::arg("rule_states"), py::arg("discrete_value_rule_states"),
+                             py::arg("bulb_states") = std::nullopt)
+                        .def("id", &rules::Phase::id, py::return_value_policy::reference)
+                        .def("rule_states", &rules::Phase::rule_states, py::return_value_policy::reference)
+                        .def("discrete_value_rule_states", &rules::Phase::discrete_value_rule_states,
+                             py::return_value_policy::reference)
+                        .def("bulb_states", &rules::Phase::bulb_states, py::return_value_policy::reference);
+
+  py::class_<rules::Phase::Id>(phase_type, "Id")
+      .def(py::init<std::string>())
+      .def("__eq__", &rules::Phase::Id::operator==)
+      .def("string", &rules::Phase::Id::string, py::return_value_policy::reference_internal)
+      .def(py::detail::hash(py::self))
+      .def("__repr__", [](const rules::Phase::Id& id) { return id.string(); });
 }
 
 }  // namespace bindings
