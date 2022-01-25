@@ -12,6 +12,7 @@ from maliput.api import (
     HBounds,
     InertialPosition,
     Intersection,
+    IntersectionBook,
     IsoLaneVelocity,
     JunctionId,
     LaneEnd,
@@ -365,3 +366,12 @@ class TestMaliputApi(unittest.TestCase):
         self.assertEqual("dut", dut.string())
         self.assertEqual("dut", dut.__repr__())
         self.assertEqual(Intersection.Id("dut"), dut)
+
+    def test_intersection_book_methods(self):
+        """
+        Tests that IntersectionBook exposes the right methods.
+        """
+        dut_type_methods = dir(IntersectionBook)
+        self.assertTrue('GetIntersections' in dut_type_methods)
+        self.assertTrue('GetIntersection' in dut_type_methods)
+        self.assertTrue('FindIntersection' in dut_type_methods)
