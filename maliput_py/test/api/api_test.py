@@ -23,6 +23,7 @@ from maliput.api import (
     LaneSRoute,
     RBounds,
     RoadGeometryId,
+    RoadNetwork,
     RoadPosition,
     RoadPositionResult,
     Rotation,
@@ -375,3 +376,21 @@ class TestMaliputApi(unittest.TestCase):
         self.assertTrue('GetIntersections' in dut_type_methods)
         self.assertTrue('GetIntersection' in dut_type_methods)
         self.assertTrue('FindIntersection' in dut_type_methods)
+
+    def test_road_network_methods(self):
+        """
+        Tests that RoadNetwork exposes the right methods.
+        """
+        dut_type_methods = dir(RoadNetwork)
+        self.assertTrue('__init__' in dut_type_methods)
+        self.assertTrue('road_geometry' in dut_type_methods)
+        self.assertTrue('rulebook' in dut_type_methods)
+        self.assertTrue('traffic_light_book' in dut_type_methods)
+        self.assertTrue('intersection_book' in dut_type_methods)
+        self.assertTrue('phase_ring_book' in dut_type_methods)
+        self.assertTrue('right_of_way_rule_state_provider' in dut_type_methods)
+        self.assertTrue('phase_provider' in dut_type_methods)
+        self.assertTrue('rule_registry' in dut_type_methods)
+        self.assertTrue('discrete_value_rule_state_provider' in dut_type_methods)
+        self.assertTrue('range_value_rule_state_provider' in dut_type_methods)
+        self.assertTrue('Contains' in dut_type_methods)
