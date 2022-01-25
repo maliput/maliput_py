@@ -296,16 +296,13 @@ PYBIND11_MODULE(api, m) {
       .def("GetIntersection", &api::IntersectionBook::GetIntersection, py::arg("id"))
       .def("FindIntersection",
            py::overload_cast<const api::rules::TrafficLight::Id&>(&api::IntersectionBook::FindIntersection),
-           py::arg("id"),
-           py::return_value_policy::reference_internal)
+           py::arg("id"), py::return_value_policy::reference_internal)
       .def("FindIntersection",
            py::overload_cast<const api::rules::DiscreteValueRule::Id&>(&api::IntersectionBook::FindIntersection),
-           py::arg("id"),
-           py::return_value_policy::reference_internal)
+           py::arg("id"), py::return_value_policy::reference_internal)
       .def("FindIntersection",
            py::overload_cast<const api::rules::RightOfWayRule::Id&>(&api::IntersectionBook::FindIntersection),
-           py::arg("id"),
-           py::return_value_policy::reference_internal);
+           py::arg("id"), py::return_value_policy::reference_internal);
 }
 
 }  // namespace bindings
