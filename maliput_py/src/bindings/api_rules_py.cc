@@ -7,6 +7,7 @@
 #include <maliput/api/rules/phase.h>
 #include <maliput/api/rules/phase_provider.h>
 #include <maliput/api/rules/phase_ring.h>
+#include <maliput/api/rules/phase_ring_book.h>
 #include <maliput/api/rules/range_value_rule.h>
 #include <maliput/api/rules/range_value_rule_state_provider.h>
 #include <maliput/api/rules/rule.h>
@@ -375,7 +376,7 @@ void InitializeRulesNamespace(py::module* m) {
       .def(py::detail::hash(py::self))
       .def("__repr__", [](const rules::Phase::Id& id) { return id.string(); });
 
-  auto phase_ring_book_type =
+  auto phase_ring_type =
       py::class_<rules::PhaseRing>(*m, "PhaseRing")
           .def(py::init<const rules::PhaseRing::Id&, const std::vector<rules::Phase>&,
                         const std::optional<
@@ -387,14 +388,14 @@ void InitializeRulesNamespace(py::module* m) {
           .def("next_phases", &rules::PhaseRing::next_phases, py::return_value_policy::reference)
           .def("GetNextPhases", &rules::PhaseRing::GetNextPhases, py::arg("id"), py::return_value_policy::reference);
 
-  py::class_<rules::PhaseRing::Id>(phase_ring_book_type, "Id")
+  py::class_<rules::PhaseRing::Id>(phase_ring_type, "Id")
       .def(py::init<std::string>())
       .def("__eq__", &rules::PhaseRing::Id::operator==)
       .def("string", &rules::PhaseRing::Id::string, py::return_value_policy::reference_internal)
       .def(py::detail::hash(py::self))
       .def("__repr__", [](const rules::PhaseRing::Id& id) { return id.string(); });
 
-  py::class_<rules::PhaseRing::NextPhase>(phase_ring_book_type, "NextPhase")
+  py::class_<rules::PhaseRing::NextPhase>(phase_ring_type, "NextPhase")
       .def(py::init<rules::Phase::Id, std::optional<double>>(), py::arg("id"), py::arg("duration_until"))
       .def_readwrite("id", &rules::PhaseRing::NextPhase::id)
       .def_readwrite("duration_until", &rules::PhaseRing::NextPhase::duration_until);
@@ -409,6 +410,15 @@ void InitializeRulesNamespace(py::module* m) {
   py::class_<rules::PhaseProvider::Result::Next>(phase_provider_state_result_type, "Next")
       .def_readwrite("state", &rules::PhaseProvider::Result::Next::state)
       .def_readwrite("duration_until", &rules::PhaseProvider::Result::Next::duration_until);
+
+  py::class_<rules::PhaseRingBook>(*m, "PhaseRingBook")
+      .def("GetPhaseRings", &rules::PhaseRingBook::GetPhaseRings)
+      .def("GetPhaseRing", &rules::PhaseRingBook::GetPhaseRing, py::arg("id"))
+      .def("FindPhaseRing",
+           py::overload_cast<const rules::RightOfWayRule::Id&>(&rules::PhaseRingBook::FindPhaseRing, py::const_),
+           py::arg("rule_id"))
+      .def("FindPhaseRing", py::overload_cast<const rules::Rule::Id&>(&rules::PhaseRingBook::FindPhaseRing, py::const_),
+           py::arg("rule_id"));
 }
 
 }  // namespace bindings
