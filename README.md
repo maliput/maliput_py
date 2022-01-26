@@ -1,6 +1,4 @@
-| GCC | Sanitizers(Clang) | Scan-Build |
-| --------- | --------- | -------- |
-|[![gcc](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/build.yml/badge.svg)](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/build.yml) | [![clang](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/sanitizers.yml/badge.svg)](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/sanitizers.yml) | [![scan_build](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/scan_build.yml/badge.svg)](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/scan_build.yml) |
+[![gcc](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/build.yml/badge.svg)](https://github.com/ToyotaResearchInstitute/maliput_py/actions/workflows/build.yml)
 
 # `maliput_py`
 
