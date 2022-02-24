@@ -13,3 +13,8 @@ Python bindings for `maliput` which rely on `pybind11`.
    ```sh
    colcon build --packages-up-to maliput_py
    ```
+
+   **Note**: To build documentation a `-BUILD_DOCS` cmake flag is required:
+   ```sh
+   colcon build --packages-up-to maliput_py --cmake-args " -DBUILD_DOCS=On"
+   ```
