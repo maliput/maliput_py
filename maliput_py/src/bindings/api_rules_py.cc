@@ -208,8 +208,15 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("discrete_value_rules", &rules::RoadRulebook::QueryResults::discrete_value_rules)
       .def_readwrite("range_value_rules", &rules::RoadRulebook::QueryResults::range_value_rules);
 
-  auto dvr_state_provider_type = py::class_<rules::DiscreteValueRuleStateProvider>(*m, "DiscreteValueRuleStateProvider")
-                                     .def("GetState", &rules::DiscreteValueRuleStateProvider::GetState, py::arg("id"));
+  auto dvr_state_provider_type =
+      py::class_<rules::DiscreteValueRuleStateProvider>(*m, "DiscreteValueRuleStateProvider")
+          .def("GetState",
+               py::overload_cast<const rules::Rule::Id&>(&rules::DiscreteValueRuleStateProvider::GetState, py::const_),
+               py::arg("id"))
+          .def("GetState",
+               py::overload_cast<const RoadPosition&, const rules::Rule::TypeId&, double>(
+                   &rules::DiscreteValueRuleStateProvider::GetState, py::const_),
+               py::arg("road_position"), py::arg("rule_type"), py::arg("tolerance"));
 
   auto dvr_state_provider_state_result_type =
       py::class_<rules::DiscreteValueRuleStateProvider::StateResult>(dvr_state_provider_type, "StateResult")
@@ -220,8 +227,15 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("state", &rules::DiscreteValueRuleStateProvider::StateResult::Next::state)
       .def_readwrite("duration_until", &rules::DiscreteValueRuleStateProvider::StateResult::Next::duration_until);
 
-  auto rvr_state_provider_type = py::class_<rules::RangeValueRuleStateProvider>(*m, "RangeValueRuleStateProvider")
-                                     .def("GetState", &rules::RangeValueRuleStateProvider::GetState, py::arg("id"));
+  auto rvr_state_provider_type =
+      py::class_<rules::RangeValueRuleStateProvider>(*m, "RangeValueRuleStateProvider")
+          .def("GetState",
+               py::overload_cast<const rules::Rule::Id&>(&rules::RangeValueRuleStateProvider::GetState, py::const_),
+               py::arg("id"))
+          .def("GetState",
+               py::overload_cast<const RoadPosition&, const rules::Rule::TypeId&, double>(
+                   &rules::RangeValueRuleStateProvider::GetState, py::const_),
+               py::arg("road_position"), py::arg("rule_type"), py::arg("tolerance"));
 
   auto rvr_state_provider_state_result_type =
       py::class_<rules::RangeValueRuleStateProvider::StateResult>(rvr_state_provider_type, "StateResult")
