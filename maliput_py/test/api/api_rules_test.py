@@ -167,7 +167,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., dut.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., dut.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., dut.zone().length(), 1e-9)
-        self.assertEqual([discrete_value], dut.values())
+        self.assertEqual([discrete_value], dut.states())
 
     def test_range_default_constructor(self):
         """
@@ -239,7 +239,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., dut.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., dut.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., dut.zone().length(), 1e-9)
-        self.assertEqual([range_value], dut.ranges())
+        self.assertEqual([range_value], dut.states())
 
     def test_empty_rule_registry(self):
         """
@@ -347,7 +347,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., rule_a.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., rule_a.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., rule_a.zone().length(), 1e-9)
-        self.assertEqual([range_a], rule_a.ranges())
+        self.assertEqual([range_a], rule_a.states())
 
         rule_b = dut.BuildRangeValueRule(rule_id, range_type_id, zone, [range_b])
         self.assertEqual(rule_id, rule_b.id())
@@ -357,7 +357,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., rule_b.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., rule_b.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., rule_b.zone().length(), 1e-9)
-        self.assertEqual([range_b], rule_b.ranges())
+        self.assertEqual([range_b], rule_b.states())
 
         rule_ab = dut.BuildRangeValueRule(rule_id, range_type_id, zone, [range_a, range_b])
         self.assertEqual(rule_id, rule_ab.id())
@@ -367,7 +367,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., rule_ab.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., rule_ab.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., rule_ab.zone().length(), 1e-9)
-        self.assertEqual([range_a, range_b], rule_ab.ranges())
+        self.assertEqual([range_a, range_b], rule_ab.states())
 
     def test_rule_registry_build_discrete_value_rule(self):
         """
@@ -396,7 +396,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., rule_a.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., rule_a.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., rule_a.zone().length(), 1e-9)
-        self.assertEqual([discrete_value_a], rule_a.values())
+        self.assertEqual([discrete_value_a], rule_a.states())
 
         rule_b = dut.BuildDiscreteValueRule(rule_id, discrete_value_type_id, zone,
                                             [discrete_value_b])
@@ -407,7 +407,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., rule_b.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., rule_b.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., rule_b.zone().length(), 1e-9)
-        self.assertEqual([discrete_value_b], rule_b.values())
+        self.assertEqual([discrete_value_b], rule_b.states())
 
         rule_ab = dut.BuildDiscreteValueRule(rule_id, discrete_value_type_id, zone,
                                              [discrete_value_a, discrete_value_b])
@@ -418,7 +418,7 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertEqual(0., rule_ab.zone().ranges()[0].s_range().s0())
         self.assertEqual(100., rule_ab.zone().ranges()[0].s_range().s1())
         self.assertAlmostEqual(100., rule_ab.zone().length(), 1e-9)
-        self.assertEqual([discrete_value_a, discrete_value_b], rule_ab.values())
+        self.assertEqual([discrete_value_a, discrete_value_b], rule_ab.states())
 
     def test_deprecated_rules(self):
         """
