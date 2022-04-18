@@ -67,7 +67,7 @@ void InitializeRulesNamespace(py::module* m) {
           .def(py::init<const rules::Rule::Id&, const rules::Rule::TypeId&, const LaneSRoute&,
                         const std::vector<rules::DiscreteValueRule::DiscreteValue>&>(),
                py::arg("id"), py::arg("type_id"), py::arg("zone"), py::arg("values"))
-          .def("values", &rules::DiscreteValueRule::values, py::return_value_policy::reference);
+          .def("states", &rules::DiscreteValueRule::states, py::return_value_policy::reference);
 
   py::class_<rules::DiscreteValueRule::DiscreteValue, rules::Rule::State>(discrete_value_rule_type, "DiscreteValue")
       .def(py::init<>())
@@ -81,7 +81,7 @@ void InitializeRulesNamespace(py::module* m) {
                                    .def(py::init<const rules::Rule::Id&, const rules::Rule::TypeId&, const LaneSRoute&,
                                                  const std::vector<rules::RangeValueRule::Range>&>(),
                                         py::arg("id"), py::arg("type_id"), py::arg("zone"), py::arg("ranges"))
-                                   .def("ranges", &rules::RangeValueRule::ranges, py::return_value_policy::reference);
+                                   .def("states", &rules::RangeValueRule::states, py::return_value_policy::reference);
 
   py::class_<rules::RangeValueRule::Range, rules::Rule::State>(range_value_rule_type, "Range")
       .def(py::init<>())
