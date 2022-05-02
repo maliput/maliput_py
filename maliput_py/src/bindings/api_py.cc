@@ -329,7 +329,10 @@ PYBIND11_MODULE(api, m) {
            py::arg("id"), py::return_value_policy::reference_internal)
       .def("FindIntersection",
            py::overload_cast<const api::rules::RightOfWayRule::Id&>(&api::IntersectionBook::FindIntersection),
-           py::arg("id"), py::return_value_policy::reference_internal);
+           py::arg("id"), py::return_value_policy::reference_internal)
+      .def("FindIntersection",
+           py::overload_cast<const api::InertialPosition&>(&api::IntersectionBook::FindIntersection),
+           py::arg("inertial_pos"), py::return_value_policy::reference_internal);
 }
 
 }  // namespace bindings
