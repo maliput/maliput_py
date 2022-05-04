@@ -115,6 +115,7 @@ class TestMaliputApi(unittest.TestCase):
         dut = RoadPosition()
         self.assertEqual(None, dut.lane)
         self.assertEqual(Vector3(0., 0., 0.), dut.pos.srh())
+        self.assertTrue('ToInertialPosition' in dir(RoadPosition))
 
     def test_empty_road_position_result(self):
         """
