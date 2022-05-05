@@ -68,7 +68,8 @@ PYBIND11_MODULE(api, m) {
            // Keep alive, reference: `self` keeps `Lane*` alive.
            py::keep_alive<1, 2>())
       .def_readwrite("pos", &api::RoadPosition::pos)
-      .def_readonly("lane", &api::RoadPosition::lane);
+      .def_readonly("lane", &api::RoadPosition::lane)
+      .def("ToInertialPosition", &api::RoadPosition::ToInertialPosition);
 
   py::class_<api::RoadPositionResult>(m, "RoadPositionResult")
       .def(py::init<>())
