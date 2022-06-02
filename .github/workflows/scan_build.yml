@@ -30,13 +30,6 @@ jobs:
     - name: clang 8 install
       shell: bash
       run: ${{ env.ROS_WS }}/src/${{ env.PACKAGE_NAME }}/.github/clang_suite_installation.sh
-    # clone private dependencies
-    - uses: actions/checkout@v2
-      with:
-        repository: ToyotaResearchInstitute/maliput
-        fetch-depth: 0
-        path: ${{ env.ROS_WS }}/src/maliput
-        token: ${{ secrets.MALIPUT_TOKEN }}
     # clone public dependencies
     - name: vcs import
       shell: bash
