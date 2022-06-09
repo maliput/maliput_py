@@ -48,6 +48,13 @@ jobs:
       run: |
         rosdep update --include-eol-distros;
         rosdep install  -i -y --rosdistro ${ROS_DISTRO} --skip-keys "pybind11" --from-paths src
+    # Build ament_cmake_doxygen.
+    - name: colcon build ament_cmake_doxygen
+      shell: bash
+      working-directory: ${{ env.ROS_WS }}
+      run: |
+        . /opt/ros/${ROS_DISTRO}/setup.bash;
+        colcon build --packages-select ament_cmake_doxygen --event-handlers=console_direct+;
     # Build libraries.
     - name: colcon build libraries
       shell: bash
@@ -80,6 +87,7 @@ jobs:
       working-directory: ${{ env.ROS_WS }}
       run: |
         . /opt/ros/${ROS_DISTRO}/setup.bash;
+        . install/setup.bash;
         colcon build --packages-up-to ${PACKAGE_NAME} \
             --event-handlers=console_direct+ \
             --cmake-args -DBUILD_TESTING=OFF -DBUILD_DOCS=ON;
