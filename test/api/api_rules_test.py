@@ -603,31 +603,16 @@ class TestMaliputApiRules(unittest.TestCase):
 
     def test_bulb_group(self):
         """
-        Test the BulbGroup constructor and accessors bindings.
+        Test BulbGroup exposes the right methods
         """
-        bulb_1 = Bulb(Bulb.Id("bulb_1"), InertialPosition(-0.1, -0.2, -0.3), Rotation(),
-                      BulbColor.kRed, BulbType.kRound, None, [BulbState.kBlinking],
-                      Bulb.BoundingBox())
-        bulb_2 = Bulb(Bulb.Id("bulb_2"), InertialPosition(-0.1, -0.2, -0.3), Rotation(),
-                      BulbColor.kGreen, BulbType.kArrow, -0.1, [BulbState.kBlinking],
-                      Bulb.BoundingBox())
-
-        dut_id = BulbGroup.Id("dut_id")
-        dut_position = InertialPosition(1., 2., 3.)
-        dut_rotation = Rotation()
-
-        dut = BulbGroup(dut_id, dut_position, dut_rotation, [bulb_1, bulb_2])
-
-        self.assertEqual(dut_id, dut.id())
-        self.assertEqual(dut_position.xyz(), dut.position_traffic_light().xyz())
-        self.assertEqual(dut_rotation.quat().coeffs(),
-                         dut.orientation_traffic_light().quat().coeffs())
-        self.assertEqual(2, len(dut.bulbs()))
-        self.assertEqual(bulb_1.id(), dut.bulbs()[0].id())
-        self.assertEqual(bulb_2.id(), dut.bulbs()[1].id())
-        self.assertEqual(bulb_1.id(), dut.GetBulb(bulb_1.id()).id())
-        self.assertEqual(None, dut.GetBulb(Bulb.Id("none")))
-        self.assertEqual(None, dut.traffic_light())
+        dut_type_methods = dir(BulbGroup)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('unique_id' in dut_type_methods)
+        self.assertTrue('position_traffic_light' in dut_type_methods)
+        self.assertTrue('orientation_traffic_light' in dut_type_methods)
+        self.assertTrue('bulbs' in dut_type_methods)
+        self.assertTrue('GetBulb' in dut_type_methods)
+        self.assertTrue('traffic_light' in dut_type_methods)
 
     def test_traffic_light_id(self):
         """
@@ -639,31 +624,14 @@ class TestMaliputApiRules(unittest.TestCase):
 
     def test_traffic_light(self):
         """
-        Test the TrafficLight constructor and accessors bindings.
+        Test TrafficLight exposes the right methods
         """
-        bulb_1 = Bulb(Bulb.Id("bulb_1"), InertialPosition(-0.1, -0.2, -0.3), Rotation(),
-                      BulbColor.kRed, BulbType.kRound, None, [BulbState.kBlinking],
-                      Bulb.BoundingBox())
-        bulb_2 = Bulb(Bulb.Id("bulb_2"), InertialPosition(-0.1, -0.2, -0.3), Rotation(),
-                      BulbColor.kGreen, BulbType.kArrow, -0.1, [BulbState.kBlinking],
-                      Bulb.BoundingBox())
-        bulb_group = BulbGroup(BulbGroup.Id("dut_id"), InertialPosition(0.01, 0.02, 0.03),
-                               Rotation(), [bulb_1, bulb_2])
-
-        dut_id = TrafficLight.Id("dut_id")
-        dut_position = InertialPosition(1., 2., 3.)
-        dut_rotation = Rotation()
-        bulb_groups = [bulb_group]
-        dut = TrafficLight(dut_id, dut_position, dut_rotation, bulb_groups)
-
-        self.assertEqual(dut_id, dut.id())
-        self.assertEqual(dut_position.xyz(), dut.position_road_network().xyz())
-        self.assertEqual(dut_rotation.quat().coeffs(),
-                         dut.orientation_road_network().quat().coeffs())
-        self.assertEqual(1, len(dut.bulb_groups()))
-        self.assertEqual(bulb_group.id(), dut.bulb_groups()[0].id())
-        self.assertEqual(bulb_group.id(), dut.GetBulbGroup(bulb_group.id()).id())
-        self.assertEqual(None, dut.GetBulbGroup(BulbGroup.Id("none")))
+        dut_type_methods = dir(TrafficLight)
+        self.assertTrue('id' in dut_type_methods)
+        self.assertTrue('position_road_network' in dut_type_methods)
+        self.assertTrue('orientation_road_network' in dut_type_methods)
+        self.assertTrue('bulb_groups' in dut_type_methods)
+        self.assertTrue('GetBulbGroup' in dut_type_methods)
 
     def test_delimiter_unique_bulb_id(self):
         """
