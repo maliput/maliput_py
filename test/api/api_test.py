@@ -425,7 +425,6 @@ class TestMaliputApi(unittest.TestCase):
         Tests that RoadNetwork exposes the right methods.
         """
         dut_type_methods = dir(RoadNetwork)
-        self.assertTrue('__init__' in dut_type_methods)
         self.assertTrue('road_geometry' in dut_type_methods)
         self.assertTrue('rulebook' in dut_type_methods)
         self.assertTrue('traffic_light_book' in dut_type_methods)

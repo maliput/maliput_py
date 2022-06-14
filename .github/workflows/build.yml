@@ -26,4 +26,3 @@ jobs:
         package-name: ${{ env.PACKAGE_NAME }}
         target-ros2-distro: ${{ env.ROS_DISTRO }}
         vcs-repo-file-url: ${GITHUB_WORKSPACE}/.github/dependencies.repos
-        rosdep-skip-keys: pybind11
