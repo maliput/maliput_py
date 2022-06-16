@@ -332,9 +332,8 @@ void InitializeRulesNamespace(py::module* m) {
 
   auto bulb_group_type =
       py::class_<rules::BulbGroup>(*m, "BulbGroup")
-          .def(py::init<const rules::BulbGroup::Id&, const maliput::api::InertialPosition&,
-                        const maliput::api::Rotation&, std::vector<std::unique_ptr<rules::Bulb>>>(),
-               py::arg("id"), py::arg("position_traffic_light"), py::arg("orientation_traffic_light"), py::arg("bulbs"))
+          // TODO(https://github.com/maliput/maliput_infrastructure/issues/225): Add constructor binding once it is
+          // supported by pybind11.
           .def("id", &rules::BulbGroup::id, py::return_value_policy::reference)
           .def("unique_id", &rules::BulbGroup::unique_id)
           .def("position_traffic_light", &rules::BulbGroup::position_traffic_light, py::return_value_policy::reference)
@@ -355,10 +354,8 @@ void InitializeRulesNamespace(py::module* m) {
 
   auto traffic_light_type =
       py::class_<rules::TrafficLight>(*m, "TrafficLight")
-          .def(py::init<const rules::TrafficLight::Id&, const maliput::api::InertialPosition&,
-                        const maliput::api::Rotation&, std::vector<std::unique_ptr<rules::BulbGroup>>>(),
-               py::arg("id"), py::arg("position_road_network"), py::arg("orientation_road_network"),
-               py::arg("bulb_groups"))
+          // TODO(https://github.com/maliput/maliput_infrastructure/issues/225): Add constructor binding once it is
+          // supported by pybind11.
           .def("id", &rules::TrafficLight::id, py::return_value_policy::reference)
           .def("position_road_network", &rules::TrafficLight::position_road_network, py::return_value_policy::reference)
           .def("orientation_road_network", &rules::TrafficLight::orientation_road_network,
