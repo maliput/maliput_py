@@ -148,6 +148,8 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("type_id", &rules::RuleRegistry::QueryResult::type_id)
       .def_readwrite("rule_values", &rules::RuleRegistry::QueryResult::rule_values);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   // @{ TODO: Should be removed as these types get deprecated.
   auto rowr_type =
       py::class_<rules::RightOfWayRule>(*m, "RightOfWayRule")
@@ -229,6 +231,7 @@ void InitializeRulesNamespace(py::module* m) {
                py::arg("id"))
           .def("GetDiscreteValueRule", &rules::RoadRulebook::GetDiscreteValueRule, py::arg("id"))
           .def("GetRangeValueRule", &rules::RoadRulebook::GetRangeValueRule, py::arg("id"));
+#pragma GCC diagnostic pop
 
   py::class_<rules::RoadRulebook::QueryResults>(road_rulebook_type, "QueryResults")
       .def_readwrite("right_of_way", &rules::RoadRulebook::QueryResults::right_of_way)
@@ -398,6 +401,8 @@ void InitializeRulesNamespace(py::module* m) {
       .def("bulb_group_id", &rules::UniqueBulbGroupId::bulb_group_id)
       .def_static("delimiter", []() { return rules::UniqueBulbGroupId::delimiter(); });
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   auto phase_type = py::class_<rules::Phase>(*m, "Phase")
                         .def(py::init<const rules::Phase::Id&, const rules::RuleStates&,
                                       const rules::DiscreteValueRuleStates&, std::optional<rules::BulbStates>>(),
@@ -408,6 +413,7 @@ void InitializeRulesNamespace(py::module* m) {
                         .def("discrete_value_rule_states", &rules::Phase::discrete_value_rule_states,
                              py::return_value_policy::reference)
                         .def("bulb_states", &rules::Phase::bulb_states, py::return_value_policy::reference);
+#pragma GCC diagnostic pop
 
   py::class_<rules::Phase::Id>(phase_type, "Id")
       .def(py::init<std::string>())
@@ -451,6 +457,8 @@ void InitializeRulesNamespace(py::module* m) {
       .def_readwrite("state", &rules::PhaseProvider::Result::Next::state)
       .def_readwrite("duration_until", &rules::PhaseProvider::Result::Next::duration_until);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   py::class_<rules::PhaseRingBook>(*m, "PhaseRingBook")
       .def("GetPhaseRings", &rules::PhaseRingBook::GetPhaseRings)
       .def("GetPhaseRing", &rules::PhaseRingBook::GetPhaseRing, py::arg("id"))
@@ -459,6 +467,7 @@ void InitializeRulesNamespace(py::module* m) {
            py::arg("rule_id"))
       .def("FindPhaseRing", py::overload_cast<const rules::Rule::Id&>(&rules::PhaseRingBook::FindPhaseRing, py::const_),
            py::arg("rule_id"));
+#pragma GCC diagnostic pop
 }
 
 }  // namespace bindings

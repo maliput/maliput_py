@@ -134,6 +134,8 @@ PYBIND11_MODULE(api, m) {
       .def_readwrite("rho_v", &api::IsoLaneVelocity::rho_v)
       .def_readwrite("eta_v", &api::IsoLaneVelocity::eta_v);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   py::class_<api::RoadNetwork>(m, "RoadNetwork")
       // TODO(https://github.com/maliput/maliput_infrastructure/issues/225): Add constructor binding once it is
       // supported by pybind11.
@@ -154,6 +156,7 @@ PYBIND11_MODULE(api, m) {
            py::arg("road_position"))
       .def("Contains", py::overload_cast<const api::LaneId&>(&api::RoadNetwork::Contains, py::const_),
            py::arg("lane_id"));
+#pragma GCC diagnostic pop
 
   py::class_<api::RoadGeometry>(m, "RoadGeometry")
       .def("id", &api::RoadGeometry::id)
@@ -307,6 +310,8 @@ PYBIND11_MODULE(api, m) {
   auto rules_module = m.def_submodule("rules", "Maliput rules namespace");
   api::bindings::InitializeRulesNamespace(&rules_module);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   auto intersection_type =
       py::class_<api::Intersection>(m, "Intersection")
           .def("id", &api::Intersection::id, py::return_value_policy::reference_internal)
@@ -331,6 +336,7 @@ PYBIND11_MODULE(api, m) {
                py::overload_cast<const api::InertialPosition&, const api::RoadGeometry*>(&api::Intersection::Includes,
                                                                                          py::const_),
                py::arg("inertial_position"), py::arg("road_geometry"));
+#pragma GCC diagnostic pop
 
   py::class_<api::Intersection::Id>(intersection_type, "Id")
       .def(py::init<std::string>())
@@ -339,6 +345,8 @@ PYBIND11_MODULE(api, m) {
       .def("__eq__", &api::Intersection::Id::operator==)
       .def("__repr__", [](const api::Intersection::Id& id) { return id.string(); });
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   py::class_<api::IntersectionBook>(m, "IntersectionBook")
       .def("GetIntersections", &api::IntersectionBook::GetIntersections)
       .def("GetIntersection", &api::IntersectionBook::GetIntersection, py::arg("id"))
@@ -354,6 +362,7 @@ PYBIND11_MODULE(api, m) {
       .def("FindIntersection",
            py::overload_cast<const api::InertialPosition&>(&api::IntersectionBook::FindIntersection),
            py::arg("inertial_pos"), py::return_value_policy::reference_internal);
+#pragma GCC diagnostic pop
 }
 
 }  // namespace bindings
