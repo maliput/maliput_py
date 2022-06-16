@@ -2,6 +2,11 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Removes pylint and pycodestyle explicit dependency. (`#63 <https://github.com/maliput/maliput_py/issues/63>`_)
+* Contributors: Franco Cipollone
+
 0.1.0 (2022-06-16)
 ------------------
 * Updates package.xml
