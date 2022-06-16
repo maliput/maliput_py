@@ -2,8 +2,8 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2022-06-16)
+------------------
 * Updates package.xml
 * Suppresses old-rule-api-related deprecation warnings. (`#62 <https://github.com/maliput/maliput_py/issues/62>`_)
 * Depends on pybind11 package via rosdep. (`#61 <https://github.com/maliput/maliput_py/issues/61>`_)
