@@ -10,8 +10,6 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <doc_depend>ament_cmake_doxygen</doc_depend>
   <build_depend>python3</build_depend>
-  <build_depend>python-pylint3</build_depend>
-  <build_depend>python3-pycodestyle</build_depend>
 
   <depend>maliput</depend>
   <depend>pybind11-dev</depend>
