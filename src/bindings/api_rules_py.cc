@@ -45,6 +45,7 @@
 #include <maliput/api/rules/road_rulebook.h>
 #include <maliput/api/rules/rule_registry.h>
 #include <maliput/api/rules/traffic_lights.h>
+#include <maliput/api/rules/traffic_light_book.h>
 // TODO: Should be removed as SpeedLimitRule gets deprecated.
 #include <maliput/api/rules/speed_limit_rule.h>
 #include <pybind11/operators.h>
@@ -400,6 +401,10 @@ void InitializeRulesNamespace(py::module* m) {
       .def("traffic_light_id", &rules::UniqueBulbGroupId::traffic_light_id)
       .def("bulb_group_id", &rules::UniqueBulbGroupId::bulb_group_id)
       .def_static("delimiter", []() { return rules::UniqueBulbGroupId::delimiter(); });
+
+  py::class_<rules::TrafficLightBook>(*m, "TrafficLightBook")
+      .def("GetTrafficLight", &rules::TrafficLightBook::GetTrafficLight, py::arg("traffic_light_id"), py::return_value_policy::reference)
+      .def("TrafficLights", &rules::TrafficLightBook::TrafficLights);
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
