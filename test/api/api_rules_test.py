@@ -70,6 +70,7 @@ from maliput.api.rules import (
     RuleRegistry,
     SpeedLimitRule,
     TrafficLight,
+    TrafficLightBook,
     UniqueBulbId,
     UniqueBulbGroupId,
 )
@@ -632,6 +633,14 @@ class TestMaliputApiRules(unittest.TestCase):
         self.assertTrue('orientation_road_network' in dut_type_methods)
         self.assertTrue('bulb_groups' in dut_type_methods)
         self.assertTrue('GetBulbGroup' in dut_type_methods)
+
+    def test_traffic_light_book(self):
+        """
+        Test TrafficLightBook exposes the right methods
+        """
+        dut_type_methods = dir(TrafficLightBook)
+        self.assertTrue('GetTrafficLight' in dut_type_methods)
+        self.assertTrue('TrafficLights' in dut_type_methods)
 
     def test_delimiter_unique_bulb_id(self):
         """
