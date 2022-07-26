@@ -348,8 +348,9 @@ PYBIND11_MODULE(api, m) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   py::class_<api::IntersectionBook>(m, "IntersectionBook")
-      .def("GetIntersections", &api::IntersectionBook::GetIntersections)
-      .def("GetIntersection", &api::IntersectionBook::GetIntersection, py::arg("id"))
+      .def("GetIntersections", &api::IntersectionBook::GetIntersections, py::return_value_policy::reference_internal)
+      .def("GetIntersection", &api::IntersectionBook::GetIntersection, py::arg("id"),
+           py::return_value_policy::reference_internal)
       .def("FindIntersection",
            py::overload_cast<const api::rules::TrafficLight::Id&>(&api::IntersectionBook::FindIntersection),
            py::arg("id"), py::return_value_policy::reference_internal)
