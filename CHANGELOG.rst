@@ -2,6 +2,15 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use maliput's method for creating road network via plugin api. (`#68 <https://github.com/maliput/maliput_py/issues/68>`_)
+* Fixes IntersectionBook's bug. (`#69 <https://github.com/maliput/maliput_py/issues/69>`_)
+* Adds triage workflow. (`#66 <https://github.com/maliput/maliput_py/issues/66>`_)
+* Adds TrafficLightBook bindings. (`#65 <https://github.com/maliput/maliput_py/issues/65>`_)
+* Improves README. (`#64 <https://github.com/maliput/maliput_py/issues/64>`_)
+* Contributors: Franco Cipollone
+
 0.1.1 (2022-06-16)
 ------------------
 * Removes pylint and pycodestyle explicit dependency. (`#63 <https://github.com/maliput/maliput_py/issues/63>`_)
