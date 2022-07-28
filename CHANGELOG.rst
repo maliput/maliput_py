@@ -2,8 +2,8 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.2 (2022-07-28)
+------------------
 * Use maliput's method for creating road network via plugin api. (`#68 <https://github.com/maliput/maliput_py/issues/68>`_)
 * Fixes IntersectionBook's bug. (`#69 <https://github.com/maliput/maliput_py/issues/69>`_)
 * Adds triage workflow. (`#66 <https://github.com/maliput/maliput_py/issues/66>`_)
