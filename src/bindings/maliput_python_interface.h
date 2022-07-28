@@ -105,6 +105,6 @@
 /// import maliput.api
 /// import maliput.plugin
 ///
-/// road_network = maliput.plugin.create_road_network_from_plugin("my_road_network_loader_plugin", dict())
+/// road_network = maliput.plugin.create_road_network("my_road_network_loader_plugin", dict())
 /// num_junctions = road_network.road_geometry().num_junctions()
 /// @endcode
