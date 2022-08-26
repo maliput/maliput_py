@@ -453,6 +453,7 @@ class TestMaliputApi(unittest.TestCase):
         self.assertTrue('elevation_bounds' in dut_type_methods)
         self.assertTrue('ToInertialPosition' in dut_type_methods)
         self.assertTrue('ToLanePosition' in dut_type_methods)
+        self.assertTrue('ToSegmentPosition' in dut_type_methods)
         self.assertTrue('EvalMotionDerivatives' in dut_type_methods)
         self.assertTrue('GetBranchPoint' in dut_type_methods)
         self.assertTrue('GetConfluentBranches' in dut_type_methods)
