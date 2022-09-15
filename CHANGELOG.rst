@@ -2,6 +2,11 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Adds binding for ToSegmentPosition. (`#70 <https://github.com/maliput/maliput_py/issues/70>`_)
+* Contributors: Franco Cipollone
+
 0.1.2 (2022-07-28)
 ------------------
 * Use maliput's method for creating road network via plugin api. (`#68 <https://github.com/maliput/maliput_py/issues/68>`_)
