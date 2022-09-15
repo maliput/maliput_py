@@ -2,8 +2,8 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.3 (2022-09-14)
+------------------
 * Adds binding for ToSegmentPosition. (`#70 <https://github.com/maliput/maliput_py/issues/70>`_)
 * Contributors: Franco Cipollone
 
