@@ -58,13 +58,7 @@ PYBIND11_MODULE(plugin, m) {
              return self.GetPlugin(plugin::MaliputPlugin::Id(plugin_name));
            })
       .def("AddPlugin", &plugin::MaliputPluginManager::AddPlugin)
-      .def("ListPlugins", [](plugin::MaliputPluginManager& self) {
-        const auto plugins = self.ListPlugins();
-        std::vector<std::string> plugins_str{};
-        std::transform(plugins.begin(), plugins.end(), std::back_inserter(plugins_str),
-                       [](const plugin::MaliputPlugin::Id& id) { return id.string(); });
-        return plugins_str;
-      });
+      .def("ListPlugins", &plugin::MaliputPluginManager::ListPlugins);
 
   m.def("create_road_network", &maliput::plugin::CreateRoadNetwork,
         "Creates a maliput::api::plugin::RoadNetwork using `plugin_id` implementation.", py::arg("plugin_id"),
