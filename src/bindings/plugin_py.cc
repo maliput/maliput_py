@@ -27,16 +27,11 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include <algorithm>
-#include <map>
 #include <string>
-#include <vector>
 
-#include <maliput/common/logger.h>
 #include <maliput/plugin/create_road_network.h>
 #include <maliput/plugin/maliput_plugin.h>
 #include <maliput/plugin/maliput_plugin_manager.h>
-#include <maliput/plugin/road_network_loader.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
