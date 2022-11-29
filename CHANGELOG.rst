@@ -2,6 +2,12 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Updates ListPlugins binding. (`#72 <https://github.com/maliput/maliput_py/issues/72>`_)
+* Updates triage workflow. (`#71 <https://github.com/maliput/maliput_py/issues/71>`_)
+* Contributors: Franco Cipollone
+
 0.1.3 (2022-09-14)
 ------------------
 * Adds binding for ToSegmentPosition. (`#70 <https://github.com/maliput/maliput_py/issues/70>`_)
