@@ -45,6 +45,10 @@ PYBIND11_MODULE(math, m) {
       .def("__getitem__", py::overload_cast<std::size_t>(&math::Vector3::operator[]), py::is_operator())
       .def("__eq__", [](const math::Vector3& a, const math::Vector3& b) { return a == b; })
       .def("__ne__", [](const math::Vector3& a, const math::Vector3& b) { return a != b; })
+      .def("__add__", [](const math::Vector3& a, const math::Vector3& b) { return a + b; })
+      .def("__sub__", [](const math::Vector3& a, const math::Vector3& b) { return a - b; })
+      .def("__mul__", [](const math::Vector3& a, double scalar) { return a * scalar; })
+      .def("__rmul__", [](const math::Vector3& a, double scalar) { return scalar * a; })
       .def("__str__",
            [](const math::Vector3& self) {
              std::stringstream ss;
@@ -52,6 +56,11 @@ PYBIND11_MODULE(math, m) {
              return ss.str();
            })
       .def("size", &math::Vector3::size)
+      .def("cross", &math::Vector3::cross)
+      .def("dot", [](const math::Vector3& self, const math::Vector3& other) { return self.dot(other); })
+      .def("norm", &math::Vector3::norm)
+      .def("normalize", &math::Vector3::normalize)
+      .def("normalized", &math::Vector3::normalized)
       .def("x", py::overload_cast<>(&math::Vector3::x))
       .def("y", py::overload_cast<>(&math::Vector3::y))
       .def("z", py::overload_cast<>(&math::Vector3::z));
@@ -61,6 +70,10 @@ PYBIND11_MODULE(math, m) {
       .def("__getitem__", py::overload_cast<std::size_t>(&math::Vector4::operator[]), py::is_operator())
       .def("__eq__", [](const math::Vector4& a, const math::Vector4& b) { return a == b; })
       .def("__ne__", [](const math::Vector4& a, const math::Vector4& b) { return a != b; })
+      .def("__add__", [](const math::Vector4& a, const math::Vector4& b) { return a + b; })
+      .def("__sub__", [](const math::Vector4& a, const math::Vector4& b) { return a - b; })
+      .def("__mul__", [](const math::Vector4& a, double scalar) { return a * scalar; })
+      .def("__rmul__", [](const math::Vector4& a, double scalar) { return scalar * a; })
       .def("__str__",
            [](const math::Vector4& self) {
              std::stringstream ss;
@@ -68,6 +81,10 @@ PYBIND11_MODULE(math, m) {
              return ss.str();
            })
       .def("size", &math::Vector4::size)
+      .def("dot", [](const math::Vector4& self, const math::Vector4& other) { return self.dot(other); })
+      .def("norm", &math::Vector4::norm)
+      .def("normalize", &math::Vector4::normalize)
+      .def("normalized", &math::Vector4::normalized)
       .def("x", py::overload_cast<>(&math::Vector4::x))
       .def("y", py::overload_cast<>(&math::Vector4::y))
       .def("z", py::overload_cast<>(&math::Vector4::z))

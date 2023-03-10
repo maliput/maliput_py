@@ -61,7 +61,26 @@ class TestMaliputMath(unittest.TestCase):
         self.assertTrue(kDut[2] == 33.)
         self.assertTrue(kDut == Vector3(25., 158., 33.))
         self.assertTrue(kDut != Vector3(33., 158., 25.))
+        kDut2 = Vector3(kDut.x() * 2, kDut.y() * 2, kDut.z() * 2)
+        self.assertEqual(kDut + kDut, kDut2)
+        self.assertEqual(kDut2 - kDut, kDut)
+        self.assertEqual(2 * kDut, kDut2)
+        self.assertEqual(kDut * 2, kDut2)
         self.assertEqual(kDut.__str__(), "{25, 158, 33}")
+
+        kDut = Vector3(2., 3., 6.)
+        self.assertEqual(kDut.norm(), 7.)
+        kDutNormalized = Vector3(2. / 7., 3. / 7., 6. / 7.)
+        self.assertEqual(kDut.normalized(), kDutNormalized)
+        kDut.normalize()
+        self.assertEqual(kDut, kDutNormalized)
+
+        kDut = Vector3(3., 4., 5.)
+        self.assertEqual(kDut.dot(kDut), 50.)
+
+        left = Vector3(1., 2., 3.)
+        right = Vector3(4., 5., 6.)
+        self.assertEqual(left.cross(right), Vector3(-3., 6., -3.))
 
     def test_vector4(self):
         """
@@ -80,6 +99,22 @@ class TestMaliputMath(unittest.TestCase):
         self.assertTrue(kDut == Vector4(25., 158., 33., 0.02))
         self.assertTrue(kDut != Vector4(0.02, 33., 158., 25.))
         self.assertEqual(kDut.__str__(), "{25, 158, 33, 0.02}")
+        kDut2 = Vector4(kDut.x() * 2, kDut.y() * 2, kDut.z() * 2, kDut.w() * 2)
+        self.assertEqual(kDut + kDut, kDut2)
+        self.assertEqual(kDut2 - kDut, kDut)
+        self.assertEqual(2 * kDut, kDut2)
+        self.assertEqual(kDut * 2, kDut2)
+
+        kDut = Vector4(1., 2., 3., 4.)
+        kNorm = 5.477225575051661
+        self.assertEqual(kDut.norm(), kNorm)
+        kDutNormalized = Vector4(1. / kNorm, 2. / kNorm, 3. / kNorm, 4. / kNorm)
+        self.assertEqual(kDut.normalized(), kDutNormalized)
+        kDut.normalize()
+        self.assertEqual(kDut, kDutNormalized)
+
+        kDut = Vector4(3., 4., 5., 6.)
+        self.assertEqual(kDut.dot(kDut), 9. + 16. + 25. + 36.)
 
     def test_rollpitchyaw(self):
         """
