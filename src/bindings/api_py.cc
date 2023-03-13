@@ -256,7 +256,8 @@ PYBIND11_MODULE(api, m) {
       .def("lane_id", &api::LaneSRange::lane_id, py::return_value_policy::reference_internal)
       .def("s_range", &api::LaneSRange::s_range)
       .def("length", &api::LaneSRange::length)
-      .def("Intersects", &api::LaneSRange::Intersects, py::arg("lane_s_range"), py::arg("tolerance"));
+      .def("Intersects", &api::LaneSRange::Intersects, py::arg("lane_s_range"), py::arg("tolerance"))
+      .def("GetIntersection", &api::LaneSRange::GetIntersection, py::arg("lane_s_range"), py::arg("tolerance"));
 
   py::class_<api::LaneSRoute>(m, "LaneSRoute")
       .def(py::init<>())

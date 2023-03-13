@@ -340,6 +340,16 @@ class TestMaliputApi(unittest.TestCase):
         self.assertTrue(dut.Intersects(overlapped_lane_s_range, TOLERANCE))
         not_overlapped_lane_s_range = LaneSRange(LaneId("dut_lane"), SRange(50., 75.))
         self.assertFalse(dut.Intersects(not_overlapped_lane_s_range, TOLERANCE))
+        # Check get_intersection methdo
+        non_intersected = dut.GetIntersection(other_lane_s_range, TOLERANCE)
+        self.assertEqual(non_intersected, None)
+        non_intersected = dut.GetIntersection(not_overlapped_lane_s_range, TOLERANCE)
+        self.assertEqual(non_intersected, None)
+        expected_intersection = LaneSRange(dut.lane_id(), SRange(10., 15.))
+        intersected = dut.GetIntersection(overlapped_lane_s_range, TOLERANCE)
+        self.assertEqual(intersected.lane_id(), expected_intersection.lane_id())
+        self.assertEqual(intersected.s_range().s0(), expected_intersection.s_range().s0())
+        self.assertEqual(intersected.s_range().s1(), expected_intersection.s_range().s1())
 
     def test_lane_s_route(self):
         """
