@@ -2,8 +2,8 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.5 (2023-03-13)
+------------------
 * Adds missing Vector bindings. (`#74 <https://github.com/maliput/maliput_py/issues/74>`_)
 * Adds LaneSRange::GetIntersection binding. (`#73 <https://github.com/maliput/maliput_py/issues/73>`_)
 * Contributors: Franco Cipollone
