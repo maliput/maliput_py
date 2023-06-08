@@ -54,6 +54,22 @@ target_link_libraries(plugin_py
     pybind11::module
 )
 
+# utility module
+pybind11_add_module(utility_py utility_py.cc)
+
+set_target_properties(utility_py PROPERTIES OUTPUT_NAME "utility")
+
+target_include_directories(utility_py
+  PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+target_link_libraries(utility_py
+  PRIVATE
+    maliput::utility
+    pybind11::module
+)
+
 ##############################################################################
 # Install
 ##############################################################################
@@ -67,5 +83,9 @@ install(TARGETS math_py
 )
 
 install(TARGETS plugin_py
+  DESTINATION "${PYTHON_INSTALL_DIR}/maliput"
+)
+
+install(TARGETS utility_py
   DESTINATION "${PYTHON_INSTALL_DIR}/maliput"
 )
