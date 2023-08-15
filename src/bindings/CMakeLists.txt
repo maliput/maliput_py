@@ -89,3 +89,24 @@ install(TARGETS plugin_py
 install(TARGETS utility_py
   DESTINATION "${PYTHON_INSTALL_DIR}/maliput"
 )
+
+##############################################################################
+# Wheel
+##############################################################################
+
+if(WHEEL_GENERATION)
+  set(DEPLOY_FILES "${PROJECT_SOURCE_DIR}/maliput/__init__.py")
+  set (WHEEL_VERSION "${maliput_VERSION}")
+  message(STATUS "Generating maliput wheel version ${WHEEL_VERSION}")
+
+  add_wheel(api_py math_py plugin_py utility_py
+    NAME maliput
+    AUTHOR "Franco Cipollone"
+    URL "https://github.com/maliput/maliput_py"
+    VERSION "${WHEEL_VERSION}"
+    DESCRIPTION "Python bindings for the maliput library."
+    TARGET_DEPENDENCIES math_py plugin_py utility_py
+    LICENSE_PATH "${PROJECT_SOURCE_DIR}/LICENSE"
+    DEPLOY_FILES ${DEPLOY_FILES}
+  )
+endif()
