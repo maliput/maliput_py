@@ -47,6 +47,9 @@ jobs:
         colcon build --packages-up-to ${PACKAGE_NAME} \
           --packages-skip ${PACKAGE_NAME} \
           --event-handlers=console_direct+
+    - name: install extra dependencies
+      shell: bash
+      run: sudo apt install patchelf -y
     - name: build wheel
       shell: bash
       working-directory: ${{ env.ROS_WS }}
