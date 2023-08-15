@@ -52,6 +52,7 @@ if (WHEEL_GENERATION)
   set(WHEEL_DEPLOY_DIRECTORY "${CMAKE_BINARY_DIR}/bin/wheel")
 else()
   message(STATUS "Wheel generation - Disabled")
+endif()
 
 ##############################################################################
 # Sources
