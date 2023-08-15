@@ -49,7 +49,7 @@ jobs:
           --event-handlers=console_direct+
     - name: install extra dependencies
       shell: bash
-      run: sudo apt install patchelf -y
+      run: pip install patchelf auditwheel
     - name: build wheel
       shell: bash
       working-directory: ${{ env.ROS_WS }}
@@ -59,7 +59,20 @@ jobs:
           --cmake-args -DWHEEL_GENERATION=True \
           --event-handlers=console_direct+
 
-    - name: upload wheel
+    - name: upload default wheel
       uses: actions/upload-artifact@v2
       with:
-        path: ${{ env.ROS_WS }}/build/${{ env.PACKAGE_NAME }}/bin/wheel/*
+        path: ${{ env.ROS_WS }}/build/${{ env.PACKAGE_NAME }}/bin/wheel/*.whl
+
+    - name: auditwheel repair wheel
+      shell: bash
+      working-directory: ${{ env.ROS_WS }}
+      run: |
+        . /opt/ros/${ROS_DISTRO}/setup.bash;
+        . install/setup.bash;
+        auditwheel repair build/${PACKAGE_NAME}/bin/wheel/*.whl --plat linux_x86_64 -w build/${PACKAGE_NAME}/bin/wheel/auditwheel_repaired
+
+    - name: upload repaired wheel
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{ env.ROS_WS }}/build/${{ env.PACKAGE_NAME }}/bin/wheel/auditwheel_repaired/*.whl
