@@ -63,7 +63,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.PACKAGE_NAME }}-wheel
-        path: ${{ env.ROS_WS }}/build/${{ env.PACKAGE_NAME }}/bin/wheel/*.whl
+        path: ${{ env.ROS_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/*.whl
 
     - name: auditwheel repair wheel
       shell: bash
@@ -71,10 +71,10 @@ jobs:
       run: |
         . /opt/ros/${ROS_DISTRO}/setup.bash;
         . install/setup.bash;
-        auditwheel repair build/${PACKAGE_NAME}/bin/wheel/*.whl --plat linux_x86_64 -w build/${PACKAGE_NAME}/bin/wheel/auditwheel_repaired
+        auditwheel repair build/${PACKAGE_NAME}/wheel/*.whl --plat linux_x86_64 -w build/${PACKAGE_NAME}/wheel/auditwheel_repaired
 
     - name: upload repaired wheel
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.PACKAGE_NAME }}-repaired-wheel
-        path: ${{ env.ROS_WS }}/build/${{ env.PACKAGE_NAME }}/bin/wheel/auditwheel_repaired/*.whl
+        path: ${{ env.ROS_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/auditwheel_repaired/*.whl
