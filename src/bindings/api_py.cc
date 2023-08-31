@@ -161,7 +161,10 @@ PYBIND11_MODULE(api, m) {
   py::class_<api::RoadGeometry>(m, "RoadGeometry")
       .def("id", &api::RoadGeometry::id)
       .def("num_junctions", &api::RoadGeometry::num_junctions)
-      .def("junction", &api::RoadGeometry::junction, py::return_value_policy::reference_internal)
+      .def("num_branch_points", &api::RoadGeometry::num_branch_points)
+      .def("junction", &api::RoadGeometry::junction, py::arg("index"), py::return_value_policy::reference_internal)
+      .def("branch_point", &api::RoadGeometry::branch_point, py::arg("index"),
+           py::return_value_policy::reference_internal)
       .def("ById", &api::RoadGeometry::ById, py::return_value_policy::reference_internal)
       // clang-format off
       .def("ToRoadPosition",
@@ -173,7 +176,14 @@ PYBIND11_MODULE(api, m) {
               const api::RoadPosition& road_position) { return self.ToRoadPosition(inertial_position, road_position); },
            py::arg("inertial_position"), py::arg("hint"))
       // clang-format on
-      .def("FindRoadPositions", &api::RoadGeometry::FindRoadPositions, py::arg("inertial_position"), py::arg("radius"));
+      .def("FindRoadPositions", &api::RoadGeometry::FindRoadPositions, py::arg("inertial_position"), py::arg("radius"))
+      .def("linear_tolerance", &api::RoadGeometry::linear_tolerance)
+      .def("angular_tolerance", &api::RoadGeometry::angular_tolerance)
+      .def("scale_length", &api::RoadGeometry::scale_length)
+      .def("CheckInvariants", &api::RoadGeometry::CheckInvariants)
+      .def("SampleAheadWaypoints", &api::RoadGeometry::SampleAheadWaypoints, py::arg("lane_s_route"),
+           py::arg("path_length_sampling_rate"))
+      .def("inertial_to_backend_frame_translation", &api::RoadGeometry::inertial_to_backend_frame_translation);
 
   py::class_<api::RoadGeometry::IdIndex>(m, "RoadGeometry.IdIndex")
       .def("GetLane", &api::RoadGeometry::IdIndex::GetLane, py::arg("id"), py::return_value_policy::reference_internal)
