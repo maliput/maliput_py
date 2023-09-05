@@ -10,7 +10,10 @@ __all__ = [
 
 def get_maliput_backends():
     import importlib.metadata as importlib_metadata
-    return importlib_metadata.entry_points()['maliput.backends']
+    entry_points = importlib_metadata.entry_points()
+    if 'maliput.backends' in entry_points:
+      return entry_points['maliput.backends']
+    return []
 
 # Update MALIPUT_PLUGIN_PATH environment variable with paths provided by the `maliput.backends` entry point
 # Each backend will have as entry point:

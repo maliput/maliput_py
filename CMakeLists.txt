@@ -14,7 +14,13 @@ message(STATUS "\n\n====== Finding 3rd Party Packages ======\n")
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(maliput REQUIRED)
-find_package(pybind11 REQUIRED)
+
+# call pybind11-config to obtain the root of the cmake package
+execute_process(COMMAND ${PYTHON_EXECUTABLE} -m pybind11 --cmakedir
+                OUTPUT_VARIABLE pybind11_ROOT_RAW)
+string(STRIP ${pybind11_ROOT_RAW} pybind11_ROOT)
+set(pybind11_DIR ${pybind11_ROOT})
+find_package(pybind11)
 
 ##############################################################################
 # Project Configuration
@@ -41,8 +47,8 @@ ament_environment_hooks(
 if (WHEEL_GENERATION)
   message(STATUS "Wheel generation - Enabled")
   FetchContent_Declare(python-cmake-wheel
-  GIT_REPOSITORY "https://github.com/Klebert-Engineering/python-cmake-wheel"
-  GIT_TAG        "v0.9.0"
+  GIT_REPOSITORY "https://github.com/francocipollone/python-cmake-wheel"
+  GIT_TAG        "francocipollone/python_lib"
   GIT_SHALLOW    ON)
 
   FetchContent_GetProperties(python-cmake-wheel)
