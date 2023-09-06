@@ -2,8 +2,8 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.6 (2023-09-06)
+------------------
 * Adds missing RoadGeometry bindings. (`#78 <https://github.com/maliput/maliput_py/issues/78>`_)
 * Adds bindings for GenerateObjFile method. (`#76 <https://github.com/maliput/maliput_py/issues/76>`_)
 * Contributors: Franco Cipollone
