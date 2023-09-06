@@ -3,7 +3,7 @@
 ##############################################################################
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project(maliput_py LANGUAGES C CXX VERSION 0.1.5)
+project(maliput_py LANGUAGES C CXX VERSION 0.1.6)
 
 ##############################################################################
 # Find 3rd Party Packages
