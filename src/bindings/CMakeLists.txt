@@ -96,8 +96,8 @@ if(WHEEL_GENERATION)
   add_wheel(api_py math_py plugin_py utility_py
     NAME maliput
     AUTHOR "Franco Cipollone"
-    URL "https://github.com/maliput/maliput_py"
-    VERSION "${PROJECT_VERSION}"
+    URL "https://github.com/maliput/maliput"
+    VERSION "${maliput_VERSION}"
     DESCRIPTION "Python bindings for the maliput library."
     TARGET_DEPENDENCIES math_py plugin_py utility_py
     # TARGET_DEPENDENCIES math_py plugin_py utility_py maliput::plugin maliput::api maliput::common maliput::math maliput::utility
