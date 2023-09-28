@@ -23,8 +23,8 @@ jobs:
       LDFLAGS: -fuse-ld=lld-8
     steps:
     # setup-ros first since it installs git, which is needed to fetch all branches from actions/checkout
-    - uses: ros-tooling/setup-ros@0.2.1
-    - uses: actions/checkout@v2
+    - uses: ros-tooling/setup-ros@v0.3
+    - uses: actions/checkout@v3
       with:
         path: ${{ env.ROS_WS }}/src/${{ env.PACKAGE_NAME }}
     - name: clang 8 install
@@ -46,7 +46,7 @@ jobs:
       shell: bash
       working-directory: ${{ env.ROS_WS }}
       run: |
-        rosdep update;
+        rosdep update --include-eol-distros;
         rosdep install  -i -y --rosdistro ${ROS_DISTRO} --from-paths src
     - name: colcon build up-to
       shell: bash
