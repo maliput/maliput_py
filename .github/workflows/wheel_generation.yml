@@ -41,9 +41,6 @@ jobs:
       run: /opt/python/${PYTHON_VERSION}/bin/colcon graph
       shell: bash
       working-directory: ${{ env.COLCON_WS }}
-    # install cmake
-    - name: pip install cmake
-      run: /opt/python/${PYTHON_VERSION}/bin/pip install cmake
     # colcon build
     - name: colcon build
       shell: bash
@@ -83,4 +80,4 @@ jobs:
       with:
         name: manylinux2014_x86_64
         path: ${{ env.COLCON_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/repaired
-
+        retention-days: 7
