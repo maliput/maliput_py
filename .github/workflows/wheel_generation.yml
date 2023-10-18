@@ -51,7 +51,6 @@ jobs:
       run: |
         source /colcon_builds/install/setup.bash;
         PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH \
-        CMAKE_COMMAND=${{ env.CMAKE_COMMAND_ENV }} \
         /opt/python/${PYTHON_VERSION}/bin/colcon build --packages-up-to ${PACKAGE_NAME} \
           --cmake-args \
             ' -DWHEEL_GENERATION=On' \
@@ -82,6 +81,6 @@ jobs:
     - name: upload wheels as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: wheels
+        name: manylinux2014_x86_64
         path: ${{ env.COLCON_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/repaired
 
