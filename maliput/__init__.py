@@ -8,6 +8,7 @@ __all__ = [
     'plugin'
 ]
 
+
 def get_maliput_backends():
     import importlib.metadata as importlib_metadata
     entry_points = importlib_metadata.entry_points()
@@ -15,12 +16,16 @@ def get_maliput_backends():
       return entry_points['maliput.backends']
     return []
 
-# Update MALIPUT_PLUGIN_PATH environment variable with paths provided by the `maliput.backends` entry point
-# Each backend will have as entry point:
-#   group: maliput.backends
-#   name: <backend_name> (e.g. 'maliput_malidrive')
-#   value: method that returns the path to the location of .so files
+
 def update_plugin_path():
+    """
+    Update MALIPUT_PLUGIN_PATH environment variable with paths
+    provided by the `maliput.backends` entry point
+    Each backend will have as entry point:
+      group: maliput.backends
+      name: <backend_name> (e.g. 'maliput_malidrive')
+      value: method that returns the path to the location of .so files
+    """
     import os
 
     plugin_paths = []
@@ -34,4 +39,3 @@ def update_plugin_path():
 
 
 update_plugin_path()
-
