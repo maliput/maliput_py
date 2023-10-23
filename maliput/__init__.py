@@ -13,7 +13,7 @@ def get_maliput_backends():
     import importlib.metadata as importlib_metadata
     entry_points = importlib_metadata.entry_points()
     if 'maliput.backends' in entry_points:
-      return entry_points['maliput.backends']
+        return entry_points['maliput.backends']
     return []
 
 
