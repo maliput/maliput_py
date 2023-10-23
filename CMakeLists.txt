@@ -41,8 +41,8 @@ ament_environment_hooks(
 if (WHEEL_GENERATION)
   message(STATUS "Wheel generation - Enabled")
   FetchContent_Declare(python-cmake-wheel
-  GIT_REPOSITORY "https://github.com/francocipollone/python-cmake-wheel"
-  GIT_TAG        "francocipollone/maliput_wheel"
+  GIT_REPOSITORY "https://github.com/maliput/python-cmake-wheel"
+  GIT_TAG        "main"
   GIT_SHALLOW    ON)
 
   FetchContent_GetProperties(python-cmake-wheel)
