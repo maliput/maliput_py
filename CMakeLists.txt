@@ -3,7 +3,7 @@
 ##############################################################################
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project(maliput_py LANGUAGES C CXX VERSION 3.0.0)
+project(maliput_py LANGUAGES C CXX VERSION 0.1.6)
 
 ##############################################################################
 # Find 3rd Party Packages
@@ -26,12 +26,33 @@ set(BUILD_SHARED_LIBS true)
 
 include(${PROJECT_SOURCE_DIR}/cmake/DefaultCFlags.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/SanitizersConfig.cmake)
+include(FetchContent)
 
 ament_python_install_package("maliput")
 
 ament_environment_hooks(
   "${ament_cmake_package_templates_ENVIRONMENT_HOOK_LIBRARY_PATH}"
 )
+
+##############################################################################
+# Wheel
+##############################################################################
+
+if (WHEEL_GENERATION)
+  message(STATUS "Wheel generation - Enabled")
+  FetchContent_Declare(python-cmake-wheel
+  GIT_REPOSITORY "https://github.com/maliput/python-cmake-wheel"
+  GIT_TAG        "main"
+  GIT_SHALLOW    ON)
+
+  FetchContent_GetProperties(python-cmake-wheel)
+  FetchContent_MakeAvailable(python-cmake-wheel)
+  list(APPEND CMAKE_MODULE_PATH "${python-cmake-wheel_SOURCE_DIR}")
+  include(python-wheel)
+  set(WHEEL_DEPLOY_DIRECTORY "${CMAKE_BINARY_DIR}/wheel")
+else()
+  message(STATUS "Wheel generation - Disabled")
+endif()
 
 ##############################################################################
 # Sources
