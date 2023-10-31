@@ -1,7 +1,7 @@
 // BSD 3-Clause License
 //
-// Copyright (c) 2022, Woven Planet. All rights reserved.
-// Copyright (c) 2020-2022, Toyota Research Institute. All rights reserved.
+// Copyright (c) 2023, Woven by Toyota.
+// All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@
 #include <maliput/plugin/create_road_network.h>
 #include <maliput/plugin/maliput_plugin.h>
 #include <maliput/plugin/maliput_plugin_manager.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -41,10 +42,21 @@ namespace bindings {
 namespace py = pybind11;
 
 PYBIND11_MODULE(plugin, m) {
-  py::class_<plugin::MaliputPlugin>(m, "MaliputPlugin")
+  py::enum_<plugin::MaliputPluginType>(m, "MaliputPluginType")
+      .value("kRoadNetworkLoader", plugin::MaliputPluginType::kRoadNetworkLoader)
+      .export_values();
+
+  auto maliput_plugin_type = py::class_<plugin::MaliputPlugin>(m, "MaliputPlugin")
+                                 .def(py::init<std::string>())
+                                 .def("GetId", &plugin::MaliputPlugin::GetId)
+                                 .def("GetType", &plugin::MaliputPlugin::GetType);
+
+  py::class_<plugin::MaliputPlugin::Id>(maliput_plugin_type, "Id")
       .def(py::init<std::string>())
-      .def("GetId", &plugin::MaliputPlugin::GetId)
-      .def("GetType", &plugin::MaliputPlugin::GetType);
+      .def(py::detail::hash(py::self))
+      .def("string", &plugin::MaliputPlugin::Id::string)
+      .def("__eq__", &plugin::MaliputPlugin::Id::operator==)
+      .def("__repr__", [](const plugin::MaliputPlugin::Id& id) { return id.string(); });
 
   py::class_<plugin::MaliputPluginManager>(m, "MaliputPluginManager")
       .def(py::init<>())
