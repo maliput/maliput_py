@@ -32,11 +32,20 @@ jobs:
          username: ${{ github.actor }}
          password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    # TODO: The container has installed glibc-2.17-326.el7_9.x86_64 and v4 requires 2.25 and above. Need to stick with an old version.
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        path: ${{ env.COLCON_WS }}/src/${{ env.PACKAGE_NAME }}
+      # Important!: The container has installed glibc-2.17-326.el7_9.x86_64 and actions/checkout requires 2.25 and above.
+      # We need to stick to a custom checkout step.
+      # The following is the original step that is replaced.
+      # - name: Checkout code
+      #   uses: actions/checkout@v3
+      #   with:
+      #     path: ${{ env.COLCON_WS }}/src/${{ env.PACKAGE_NAME }}
+    - name: Custom Checkout
+      run: |
+        mkdir -p ${{ env.COLCON_WS }}/src && \
+        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git ${{ env.COLCON_WS }}/src/${{ env.PACKAGE_NAME }} && \
+        cd ${{ env.COLCON_WS }}/src/${{ env.PACKAGE_NAME }} && \
+        git fetch origin ${{ github.ref }} && \
+        git checkout ${{ github.sha }}
     # clone public dependencies
     - name: git clone maliput
       shell: bash
