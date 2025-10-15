@@ -15,7 +15,7 @@ env:
   PACKAGE_NAME: maliput_py
   COLCON_WS: maliput_ws
   PYTHON_VERSION: cp38-cp38
-  CMAKE_COMMAND_ENV: /opt/_internal/cpython-3.8.18/bin/cmake
+  CMAKE_COMMAND_ENV: /opt/_internal/cpython-3.8.19/bin/cmake
   RETENTION_DAYS: 7
 
 # Cancel previously running PR jobs
