@@ -8,6 +8,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        description: 'Manylinux platform'
+        required: false
+        default: 'manylinux2014_x86_64'
+        options:
+          - 'manylinux2014_x86_64'
+          - 'manylinux_2_28_x86_64'
   schedule:
     - cron:  '0 9 * * *' # 9:00am UTC, 1:00am PST.
 
@@ -27,7 +36,7 @@ jobs:
   manylinux2014:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/maliput/manylinux2014_maliput:latest
+      image: ghcr.io/maliput/${{ github.event.inputs.platform }}_maliput:latest
       credentials:
          username: ${{ github.actor }}
          password: ${{ secrets.GITHUB_TOKEN }}
@@ -82,7 +91,7 @@ jobs:
       run: |
         source install/setup.bash;
         auditwheel repair \
-          --plat manylinux2014_x86_64 \
+          --plat ${{ github.event.inputs.platform }} \
           --wheel-dir build/${PACKAGE_NAME}/wheel/repaired \
           build/${PACKAGE_NAME}/wheel/*.whl
     # List repaired wheel output
@@ -95,6 +104,6 @@ jobs:
     - name: upload wheels as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: maliput_manylinux2014_x86_64
+        name: maliput_${{ github.event.inputs.platform }}
         path: ${{ env.COLCON_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/repaired
         retention-days: ${{ env.RETENTION_DAYS }}
