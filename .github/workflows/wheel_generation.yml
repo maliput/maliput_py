@@ -120,6 +120,6 @@ jobs:
     - name: upload wheels as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: maliput_${{ env.PLATFORM }}_${{ env.CP_PYTHON_VERSION }}
+        name: maliput_${{ github.event.inputs.platform || 'manylinux_2_28_x86_64' }}_${{ env.CP_PYTHON_VERSION }}
         path: ${{ env.COLCON_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/repaired
         retention-days: ${{ env.RETENTION_DAYS }}
