@@ -13,18 +13,27 @@ on:
         type: choice
         description: 'Manylinux platform'
         required: false
-        default: 'manylinux2014_x86_64'
+        default: 'manylinux_2_28_x86_64'
         options:
           - 'manylinux2014_x86_64'
           - 'manylinux_2_28_x86_64'
+      python_version:
+        type: choice
+        description: 'Python version'
+        required: false
+        default: '3.10'
+        options:
+          - '3.8'
+          - '3.10'
   schedule:
     - cron:  '0 9 * * *' # 9:00am UTC, 1:00am PST.
 
 env:
   PACKAGE_NAME: maliput_py
   COLCON_WS: maliput_ws
-  PYTHON_VERSION: 3.8
-  CP_PYTHON_VERSION: cp38-cp38
+  PYTHON_VERSION: ${{ github.event.inputs.python_version }}
+  CP_PY_VER_HELPER: ${{ github.event.inputs.python_version | replace('.', '') }}
+  CP_PYTHON_VERSION: cp${{ env.CP_PY_VER_HELPER }}-cp${{ env.CP_PY_VER_HELPER }}m
   RETENTION_DAYS: 7
 
 # Cancel previously running PR jobs
@@ -104,6 +113,6 @@ jobs:
     - name: upload wheels as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: maliput_${{ github.event.inputs.platform }}
+        name: maliput_${{ github.event.inputs.platform }}_${{ env.CP_PYTHON_VERSION }}
         path: ${{ env.COLCON_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/repaired
         retention-days: ${{ env.RETENTION_DAYS }}
