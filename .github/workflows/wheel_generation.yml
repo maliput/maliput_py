@@ -31,9 +31,7 @@ on:
 env:
   PACKAGE_NAME: maliput_py
   COLCON_WS: maliput_ws
-  PYTHON_VERSION: ${{ github.event.inputs.python_version }}
-  CP_PY_VER_HELPER: ${{ github.event.inputs.python_version | replace('.', '') }}
-  CP_PYTHON_VERSION: cp${{ env.CP_PY_VER_HELPER }}-cp${{ env.CP_PY_VER_HELPER }}m
+  PYTHON_VERSION: ${{ github.event.inputs.python_version || '3.10' }}
   RETENTION_DAYS: 7
 
 # Cancel previously running PR jobs
@@ -42,14 +40,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  manylinux2014:
+  manylinux:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/maliput/${{ github.event.inputs.platform }}_maliput:latest
+      image: ghcr.io/maliput/${{ github.event.inputs.platform || 'manylinux_2_28_x86_64' }}_maliput:latest
       credentials:
          username: ${{ github.actor }}
          password: ${{ secrets.GITHUB_TOKEN }}
     steps:
+    - name: Set up environment variables
+      run: |
+        PY_VER_NO_DOT=$(echo "${{ env.PYTHON_VERSION }}" | sed 's/\.//g')
+        echo "CP_PYTHON_VERSION=cp${PY_VER_NO_DOT}-cp${PY_VER_NO_DOT}" >> $GITHUB_ENV
+
       # Important!: The container has installed glibc-2.17-326.el7_9.x86_64 and actions/checkout requires 2.25 and above.
       # We need to stick to a custom checkout step.
       # The following is the original step that is replaced.
@@ -84,9 +87,9 @@ jobs:
           --cmake-args \
             ' -DWHEEL_GENERATION=On' \
             ' -DBUILD_TESTING=Off' \
-            ' -DPython3_EXECUTABLE=/opt/python/${{ env.CP_PYTHON_VERSION }}/bin/python3' \
-            ' -DPython3_INCLUDE_DIR=/opt/python/${{ env.CP_PYTHON_VERSION }}/include/python${{ env.PYTHON_VERSION }}' \
-            ' -DPython3_LIBRARY=/opt/python/${{ env.CP_PYTHON_VERSION }}/lib/python${{ env.PYTHON_VERSION }}' \
+            ' -DPython3_EXECUTABLE=/opt/python/${CP_PYTHON_VERSION}/bin/python3' \
+            ' -DPython3_INCLUDE_DIR=/opt/python/${CP_PYTHON_VERSION}/include/python${{ env.PYTHON_VERSION }}' \
+            ' -DPython3_LIBRARY=/opt/python/${CP_PYTHON_VERSION}/lib/python${{ env.PYTHON_VERSION }}' \
           --event-handlers=console_direct+
     # List wheel output
     - name: list wheel output
@@ -100,7 +103,7 @@ jobs:
       run: |
         source install/setup.bash;
         auditwheel repair \
-          --plat ${{ github.event.inputs.platform }} \
+          --plat ${{ env.PLATFORM }} \
           --wheel-dir build/${PACKAGE_NAME}/wheel/repaired \
           build/${PACKAGE_NAME}/wheel/*.whl
     # List repaired wheel output
@@ -113,6 +116,6 @@ jobs:
     - name: upload wheels as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: maliput_${{ github.event.inputs.platform }}_${{ env.CP_PYTHON_VERSION }}
+        name: maliput_${{ env.PLATFORM }}_${CP_PYTHON_VERSION}
         path: ${{ env.COLCON_WS }}/build/${{ env.PACKAGE_NAME }}/wheel/repaired
         retention-days: ${{ env.RETENTION_DAYS }}
