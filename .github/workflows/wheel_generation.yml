@@ -107,7 +107,7 @@ jobs:
       run: |
         source install/setup.bash;
         auditwheel repair \
-          --plat ${{ env.PLATFORM }} \
+          --plat ${{ github.event.inputs.platform || 'manylinux_2_28_x86_64' }} \
           --wheel-dir build/${PACKAGE_NAME}/wheel/repaired \
           build/${PACKAGE_NAME}/wheel/*.whl
     # List repaired wheel output
