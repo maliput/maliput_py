@@ -50,6 +50,7 @@ from maliput.api import (
     LaneId,
     LanePosition,
     LanePositionResult,
+    LaneType,
     LaneSRange,
     LaneSRoute,
     RBounds,
@@ -114,6 +115,14 @@ class TestMaliputApi(unittest.TestCase):
         self.assertEqual(12, dut.r())
         dut.set_h(13)
         self.assertEqual(13, dut.h())
+
+    def test_lane_type(self):
+        """
+        Tests the LaneType binding.
+        """
+        self.assertEqual(LaneType.kDriving, LaneType.kDriving)
+        self.assertNotEqual(LaneType.kDriving, LaneType.kBiking)
+        self.assertTrue('type' in dir(Lane))
 
     def test_lane_position_result(self):
         """
