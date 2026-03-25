@@ -237,6 +237,7 @@ PYBIND11_MODULE(api, m) {
       .def("segment_bounds", &api::Lane::segment_bounds, py::arg("s"))
       .def("elevation_bounds", &api::Lane::elevation_bounds, py::arg("s"), py::arg("r"))
       .def("ToInertialPosition", &api::Lane::ToInertialPosition)
+      .def("GetCurvature", &api::Lane::GetCurvature)
       .def("ToLanePosition", &api::Lane::ToLanePosition)
       .def("ToSegmentPosition", &api::Lane::ToSegmentPosition)
       .def("GetOrientation", &api::Lane::GetOrientation)
