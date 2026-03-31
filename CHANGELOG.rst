@@ -2,6 +2,20 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2026-03-31)
+------------------
+* Adding GetCurvature binding (`#93 <https://github.com/maliput/maliput_py/issues/93>`_)
+* Update wheel_generation workflow. (`#89 <https://github.com/maliput/maliput_py/issues/89>`_)
+* Pybind requires python to be loaded by CMake first in Ubuntu 22 (`#88 <https://github.com/maliput/maliput_py/issues/88>`_)
+* Fixes CI. (`#87 <https://github.com/maliput/maliput_py/issues/87>`_)
+* Update github action versions. (`#86 <https://github.com/maliput/maliput_py/issues/86>`_)
+* Updates ros-tooling verison to avoid error with dependency. (`#85 <https://github.com/maliput/maliput_py/issues/85>`_)
+* Adds periodic wheel generation.(once a week) (`#84 <https://github.com/maliput/maliput_py/issues/84>`_)
+* Adds some missing bindings for maliput plugin module. (`#83 <https://github.com/maliput/maliput_py/issues/83>`_)
+* Adds workflow for manylinux wheel creation. (`#82 <https://github.com/maliput/maliput_py/issues/82>`_)
+* Fixes scan build CI. (`#80 <https://github.com/maliput/maliput_py/issues/80>`_)
+* Contributors: Agustin Alba Chicar, Franco Cipollone, Juan Carosella, andrewbest-tri
+
 0.1.6 (2023-09-06)
 ------------------
 * Adds missing RoadGeometry bindings. (`#78 <https://github.com/maliput/maliput_py/issues/78>`_)
