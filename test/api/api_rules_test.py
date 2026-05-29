@@ -537,8 +537,8 @@ class TestMaliputApiRules(unittest.TestCase):
         representation.
         """
         bulb_types_dict = BulbTypeMapper()
-        self.assertEqual("Round", bulb_types_dict[BulbType.kRound])
-        self.assertEqual("Arrow", bulb_types_dict[BulbType.kArrow])
+        self.assertEqual("round", bulb_types_dict[BulbType.kRound])
+        self.assertEqual("arrow", bulb_types_dict[BulbType.kArrow])
 
     def test_bulb_boundingbox(self):
         """
