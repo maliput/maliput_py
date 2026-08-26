@@ -47,8 +47,6 @@ from maliput.api import (
 
 from interop_test_helper import (
     RoadNetworkOwner,
-    null_road_geometry_capsule,
-    null_road_network_capsule,
 )
 
 
@@ -92,14 +90,6 @@ class TestRoadNetworkFromCapsule(unittest.TestCase):
         owner = RoadNetworkOwner()
         with self.assertRaises(ValueError):
             RoadNetwork.from_capsule(owner.road_geometry_capsule(), owner)
-
-    def test_null_pointer(self):
-        """
-        Tests that a correctly-named capsule holding nullptr is rejected.
-        """
-        owner = RoadNetworkOwner()
-        with self.assertRaises(ValueError):
-            RoadNetwork.from_capsule(null_road_network_capsule(), owner)
 
 
 class TestRoadGeometryFromCapsule(unittest.TestCase):
@@ -145,14 +135,6 @@ class TestRoadGeometryFromCapsule(unittest.TestCase):
         owner = RoadNetworkOwner()
         with self.assertRaises(ValueError):
             RoadGeometry.from_capsule(owner.road_network_capsule(), owner)
-
-    def test_null_pointer(self):
-        """
-        Tests that a correctly-named capsule holding nullptr is rejected.
-        """
-        owner = RoadNetworkOwner()
-        with self.assertRaises(ValueError):
-            RoadGeometry.from_capsule(null_road_geometry_capsule(), owner)
 
 
 class TestOwnerLifetime(unittest.TestCase):

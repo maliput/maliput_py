@@ -28,12 +28,12 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bindings/api_interop.h"
 
-#include <maliput/api/road_geometry.h>
-#include <maliput/api/road_network.h>
-
 #include <cstring>
 #include <stdexcept>
 #include <string>
+
+#include <maliput/api/road_geometry.h>
+#include <maliput/api/road_network.h>
 
 namespace maliput {
 namespace bindings {
@@ -44,9 +44,8 @@ namespace py = pybind11;
 py::object RoadNetworkFromCapsule(py::capsule capsule, py::object owner) {
   const char* name = capsule.name();
   if (name == nullptr || std::strcmp(name, kRoadNetworkCapsuleName) != 0) {
-    throw std::invalid_argument(
-        "Expected a PyCapsule named \"" + std::string(kRoadNetworkCapsuleName) +
-        "\", got \"" + std::string(name ? name : "(null)") + "\"");
+    throw std::invalid_argument("Expected a PyCapsule named \"" + std::string(kRoadNetworkCapsuleName) + "\", got \"" +
+                                std::string(name ? name : "(null)") + "\"");
   }
   auto* ptr = static_cast<api::RoadNetwork*>(capsule);
   if (ptr == nullptr) {
@@ -58,11 +57,10 @@ py::object RoadNetworkFromCapsule(py::capsule capsule, py::object owner) {
 py::object RoadGeometryFromCapsule(py::capsule capsule, py::object owner) {
   const char* name = capsule.name();
   if (name == nullptr || std::strcmp(name, kRoadGeometryCapsuleName) != 0) {
-    throw std::invalid_argument(
-        "Expected a PyCapsule named \"" + std::string(kRoadGeometryCapsuleName) +
-        "\", got \"" + std::string(name ? name : "(null)") + "\"");
+    throw std::invalid_argument("Expected a PyCapsule named \"" + std::string(kRoadGeometryCapsuleName) + "\", got \"" +
+                                std::string(name ? name : "(null)") + "\"");
   }
-  auto* ptr = static_cast<api::RoadGeometry*>(capsule);
+  const auto* ptr = static_cast<const api::RoadGeometry*>(capsule);
   if (ptr == nullptr) {
     throw std::invalid_argument("Capsule contains a null pointer");
   }

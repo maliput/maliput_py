@@ -89,15 +89,11 @@ class RoadNetworkOwner {
   std::unique_ptr<maliput::api::RoadNetwork> road_network_;
 };
 
-// A correctly-named capsule holding a null pointer. Built via PyCapsule_New
-// because py::capsule's constructor rejects nullptr on some pybind11 versions.
-py::capsule NullRoadNetworkCapsule() {
-  return py::reinterpret_steal<py::capsule>(PyCapsule_New(nullptr, kRoadNetworkCapsuleName, nullptr));
-}
-
-py::capsule NullRoadGeometryCapsule() {
-  return py::reinterpret_steal<py::capsule>(PyCapsule_New(nullptr, kRoadGeometryCapsuleName, nullptr));
-}
+// NOTE: there is deliberately no null-pointer fixture here. CPython's
+// PyCapsule_New() rejects a null pointer outright (ValueError: "PyCapsule_New
+// called with null pointer"), and PyCapsule_SetPointer() rejects it too, so a
+// capsule holding nullptr cannot be constructed. The nullptr guards in
+// api_interop.cc are therefore not reachable from Python.
 
 }  // namespace
 
@@ -113,7 +109,4 @@ PYBIND11_MODULE(interop_test_helper, m) {
       .def("road_geometry_id", &RoadNetworkOwner::road_geometry_id)
       .def("num_junctions", &RoadNetworkOwner::num_junctions)
       .def("num_branch_points", &RoadNetworkOwner::num_branch_points);
-
-  m.def("null_road_network_capsule", &NullRoadNetworkCapsule);
-  m.def("null_road_geometry_capsule", &NullRoadGeometryCapsule);
 }

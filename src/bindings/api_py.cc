@@ -174,10 +174,7 @@ PYBIND11_MODULE(api, m) {
   py::class_<api::RoadNetwork>(m, "RoadNetwork")
       // TODO(https://github.com/maliput/maliput_infrastructure/issues/225): Add constructor binding once it is
       // supported by pybind11.
-      .def_static("from_capsule", &interop::RoadNetworkFromCapsule,
-           py::arg("capsule"), py::arg("owner"),
-           "Wrap a raw C++ RoadNetwork pointer (via PyCapsule) as a Python object.\n"
-           "The `owner` is kept alive for the lifetime of the returned object.")
+      .def_static("from_capsule", &interop::RoadNetworkFromCapsule, py::arg("capsule"), py::arg("owner"))
       .def("road_geometry", &api::RoadNetwork::road_geometry, py::return_value_policy::reference_internal)
       .def("rulebook", &api::RoadNetwork::rulebook, py::return_value_policy::reference_internal)
       .def("traffic_light_book", &api::RoadNetwork::traffic_light_book, py::return_value_policy::reference_internal)
@@ -198,10 +195,7 @@ PYBIND11_MODULE(api, m) {
 #pragma GCC diagnostic pop
 
   py::class_<api::RoadGeometry>(m, "RoadGeometry")
-      .def_static("from_capsule", &interop::RoadGeometryFromCapsule,
-           py::arg("capsule"), py::arg("owner"),
-           "Wrap a raw C++ RoadGeometry pointer (via PyCapsule) as a Python object.\n"
-           "The `owner` is kept alive for the lifetime of the returned object.")
+      .def_static("from_capsule", &interop::RoadGeometryFromCapsule, py::arg("capsule"), py::arg("owner"))
       .def("id", &api::RoadGeometry::id)
       .def("num_junctions", &api::RoadGeometry::num_junctions)
       .def("num_branch_points", &api::RoadGeometry::num_branch_points)
