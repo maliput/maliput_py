@@ -1,6 +1,6 @@
 // BSD 3-Clause License
 //
-// Copyright (c) 2022, Woven Planet. All rights reserved.
+// Copyright (c) 2026, Woven Planet. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -38,9 +38,9 @@ namespace interop {
 constexpr const char* kRoadNetworkCapsuleName = "maliput.api.RoadNetwork";
 constexpr const char* kRoadGeometryCapsuleName = "maliput.api.RoadGeometry";
 
-// Wrap a raw maliput::api::RoadNetwork* (passed via PyCapsule) as a Python
-// object. The returned object's lifetime is tied to `owner` via pybind11's
-// reference_internal policy.
+// Wrap a raw const maliput::api::RoadNetwork* (passed via PyCapsule) as a
+// Python object. The returned object's lifetime is tied to `owner` via
+// pybind11's reference_internal policy.
 //
 // Requires that the pybind11 type for maliput::api::RoadNetwork has already
 // been registered (i.e. the `api` module is loaded).
