@@ -41,12 +41,20 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "bindings/api_interop.h"
 #include "bindings/api_rules_py.h"
 
 namespace maliput {
 namespace bindings {
 
 namespace py = pybind11;
+
+// PyCapsule names used by _from_capsule factory methods. External consumers
+// (e.g. Rust/PyO3 bindings) create a PyCapsule with the matching name and a
+// pointer to the C++ object, then call Type._from_capsule(capsule, owner) to
+// obtain a Python-wrapped reference whose lifetime is tied to `owner`.
+static constexpr const char* kRoadNetworkCapsuleName = "maliput.api.RoadNetwork";
+static constexpr const char* kRoadGeometryCapsuleName = "maliput.api.RoadGeometry";
 
 PYBIND11_MODULE(api, m) {
   // TODO(jadecastro) These bindings are work-in-progress. Expose additional
@@ -166,6 +174,7 @@ PYBIND11_MODULE(api, m) {
   py::class_<api::RoadNetwork>(m, "RoadNetwork")
       // TODO(https://github.com/maliput/maliput_infrastructure/issues/225): Add constructor binding once it is
       // supported by pybind11.
+      .def_static("from_capsule", &interop::RoadNetworkFromCapsule, py::arg("capsule"), py::arg("owner"))
       .def("road_geometry", &api::RoadNetwork::road_geometry, py::return_value_policy::reference_internal)
       .def("rulebook", &api::RoadNetwork::rulebook, py::return_value_policy::reference_internal)
       .def("traffic_light_book", &api::RoadNetwork::traffic_light_book, py::return_value_policy::reference_internal)
@@ -186,6 +195,7 @@ PYBIND11_MODULE(api, m) {
 #pragma GCC diagnostic pop
 
   py::class_<api::RoadGeometry>(m, "RoadGeometry")
+      .def_static("from_capsule", &interop::RoadGeometryFromCapsule, py::arg("capsule"), py::arg("owner"))
       .def("id", &api::RoadGeometry::id)
       .def("num_junctions", &api::RoadGeometry::num_junctions)
       .def("num_branch_points", &api::RoadGeometry::num_branch_points)

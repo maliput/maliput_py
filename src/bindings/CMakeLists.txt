@@ -5,6 +5,7 @@
 # api module
 pybind11_add_module(api_py
   api_py.cc
+  api_interop.cc
   api_rules_py.cc
 )
 

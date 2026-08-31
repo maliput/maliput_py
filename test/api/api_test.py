@@ -455,6 +455,7 @@ class TestMaliputApi(unittest.TestCase):
         self.assertTrue('discrete_value_rule_state_provider' in dut_type_methods)
         self.assertTrue('range_value_rule_state_provider' in dut_type_methods)
         self.assertTrue('Contains' in dut_type_methods)
+        self.assertTrue('from_capsule' in dut_type_methods)
 
     def test_lane_methods(self):
         """
@@ -533,3 +534,4 @@ class TestMaliputApi(unittest.TestCase):
         self.assertTrue('CheckInvariants' in dut_type_methods)
         self.assertTrue('SampleAheadWaypoints' in dut_type_methods)
         self.assertTrue('inertial_to_backend_frame_translation' in dut_type_methods)
+        self.assertTrue('from_capsule' in dut_type_methods)
