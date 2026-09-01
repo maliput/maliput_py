@@ -2,6 +2,12 @@
 Changelog for package maliput_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.1 (2026-09-01)
+------------------
+* feat: add py-capsule-to-road-network functionality (`#96 <https://github.com/maliput/maliput_py/issues/96>`_)
+* Fixing test after types update (`#95 <https://github.com/maliput/maliput_py/issues/95>`_)
+* Contributors: Juan Carosella, Julian Lanson
+
 0.2.0 (2026-03-31)
 ------------------
 * Adding GetCurvature binding (`#93 <https://github.com/maliput/maliput_py/issues/93>`_)
